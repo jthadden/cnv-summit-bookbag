@@ -1,0 +1,12 @@
+:scrollbar:
+:toc2:
+
+= Using Kubernetes features with virtual machines
+
+:numbered:
+
+Goals:
+
+* Connect to a VM using a `Service`
+* Connecting Pods and VMs using the SDN
+* Connect to a VM using a `Route`

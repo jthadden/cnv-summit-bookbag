@@ -1,0 +1,29 @@
+---
+config:
+  vars:
+  - name: not-used
+    value: not-used
+modules:
+  0-welcome:
+    name: Welcome
+    exit_sign: Continue
+  1-getting-started:
+    name: Getting started
+    exit_sign: Continue
+  2-environment:
+    name: 
+    exit_sign: Continue
+  4-create-a-vm:
+    name: Creating a VM
+    exit_sign: Continue
+  6-manage-vm:
+    name: Managing VMs
+    exit_sign: Continue
+  7-import-vm:
+    name: Import a VM
+    exit_sign: Continue
+  8-vms-and-k8s:
+    name: Using Kubernetes features with VMs
+    exit_sign: Continue
+  review:
+    name: Review

@@ -1,0 +1,248 @@
+:scrollbar:
+:toc2:
+
+= Managing virtual machines
+
+:numbered:
+
+In this segment of the lab we will accomplish some common virtual machine management tasks via the GUI. The OpenShift administrator console plugin for OpenShift Virtualization makes the process of changing, adding, and removing VM configuration straightforward and familiar, however you can also choose to use the CLI to edit the YAML definition directly. 
+
+Each virtual machine is an object, like all things deployed using Kubernetes, so we can interact with it using the same tools and processes as any other Kubernetes object. However, we will not be focusing on that during this lab. If you want to lean more about https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-create-vms.html#virt-creating-vm-cli_virt-create-vms[creating] and https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-edit-vms.html#virt-editing-vm-cli_virt-edit-vms[editing] virutal machines using YAML, please refer to https://docs.openshift.com/container-platform/4.12/virt/virt-using-the-cli-tools.html[the documentation].
+
+Goals:
+
+* Customize a VM during creation
+* Manage VM snapshots
+
+== Customizing a VM at creation
+
+. In the navigation menu, browse to *Virtualization* -> *VirtualMachines*
++
+Make sure you're using the `rhsummit` project.
++
+image::images/modify_navigate.png[]
+
+. Click the *Create* dropdown, select *From catalog*
++
+image::images/modify_menu.png[]
+
+. Choose the *Fedora VM* template
++
+image::images/modify_select_template.png[]
+
+. Click *Customize VirtualMachine*
++
+image::images/modify_customize.png[]
+
+. Click *Review and create VirtualMachine*
++
+This page asks for details on the source disk used for the virtual machine. We don't want to change the disk from what's used by default, so we can move on to modify other seetings by clicking the button.
++
+image::images/modify_review.png[]
+
+. Edit the *CPU | Memory* value
++
+From the *Overview* tab there are multiple options for changing the basic configuration of the virtual machine. The template we chose uses a base of 1 vCPU and 2 GiB of memory. Let's change that to use 2 vCPU and 4 GiB of memory but clicking the link with the pencil next to it.
++
+image::images/modify_edit_resources.png[]
++
+In the modal that appears, use the plus/minus or type new values into the CPU and memory boxes. When done, click the *Save* button.
++
+image::images/modify_edit_resources.png[]
+
+. Modify the size of the root disk
++
+For this virtual machine we are going to increase the size of the OS disk. Start by moving to the *Disks* tab in the interface. For the `rootdisk`, choose the *Edit* menu option.
++
+image::images/modify_edit_disk.png[]
++
+The modal has many fields that are used to set the configuration of the disk. For this lab we are only going to change the size of the disk, setting it to be *40 GIB*, then click the *Save* button.
++
+image::images/modify_edit_disk_size.png[]
++
+The other fields control how the disk is created. These include:
++
+* Is it a new "empty" disk, cloned from another PVC, or imported from a http(s) or object location
+* The type of interface used by the VM for the disk, e.g. the paravirtual `VirtIO` vs a standard virtual SCSI or SATA controller.
+* The `StorageClass` used by the PVC. 
+* Whether the disk is preallocated, i.e. "thick" provisioned. By default OpenShift Virtualization creates the VM disks as thin provisioned in the PVC.
++
+[NOTE]
+Preallocating, or not, the VM disk does not affect how the CSI provisioner will create the volume on the backing storage device. Some storage partners will create thin/thick devices based on their own policies, often defined at the storage class level. Be sure to work with your storage team and vendor to determine the optimal setting for your environment.
+
+. Add a toleration for the lab environment taint
++
+Move to the *Scheduling* tab for the virtual machine, then - as before - edit the *Tolerations rules*.
++
+image::images/modify_edit_toleration.png[]
++
+In the modal, click the *Add toleration to specify qualifying Nodes* link.
++
+image::images/modify_edit_toleration_1.png[]
++
+Add a *Taint key* value of `metal`, leave the *Value* and *Effect* at the defaults. The dialog will update to show that a node matches the toleration. Click *Save* to close the diaglog.
++
+image::images/modify_edit_toleration_2.png[]
+
+. Use cloud-init to install an application
++ 
+This virtual machine will use cloud-init to automatically deploy an application. This is a very simple example which will install nodejs, place a file, and start the application. However, hopefully it sets the stage for understanding how OpenShift Virtualization could be used with existing application dev, test, and deploy operations using the same automation tools used with other virtualiation platforms.
++
+In addition installing npm and nodejs, we are also using cloud-init to set a password for the default user `fedora`. Cloud-init is a powerful tool that can be used to conenct your virtual machines to the existing authentication/authorization solution in your environment. This configuration is for lab purpsoses only and does not reflect best, or suggested, practices.
++
+Begin by browsing to the *Scripts* tab, then selecting the *Edit* link for the Cloud-init section.
++
+image::images/modify_cloud_init_1.png[]
++
+In the modal we want to use the *Script* option to provide a custom cloud-init script for the virtual machine. After selecting the *Script* radio button, the modal will change to show some YAML code. Select all of this code and delete it, then copy -> paste the below YAML into the dialog.
++
+----
+userData: |
+  #cloud-config
+  user: fedora
+  password: rhsummit
+  chpasswd:
+    expire: false
+  packages:
+    - nodejs
+    - npm
+  write_files:
+    - content: |
+        var os = require('os');
+
+        var express = require('express')
+        var app = express()
+        
+        app.get('/', function (req, res) {
+          res.send('Hello from Red Hat Summit, I\'m ' + os.hostname() + '!\n')
+        })
+
+        app.listen(3000, function () {
+          console.log('listening on port 3000')
+        })
+      path: /opt/summit/index.js
+    - content: |
+        #! /usr/bin/bash
+        cd /opt/summit
+        npm init -y
+        npm install express -y
+        node index.js
+      permissions: '0755'
+      path: /opt/summit/start.sh
+    - content: |
+        [Unit]
+        Description=Red Hat Summit
+        After=network.target
+
+        [Service]
+        User=1000
+        Group=1000
+        WorkingDirectory=/opt/summit
+        ExecStart=/usr/bin/bash /opt/summit/start.sh
+
+        [Install]
+        WantedBy=multi-user.target
+      path: /etc/systemd/system/summit.service
+      permissions: '0755'
+  runcmd:
+    - chown -R fedora:fedora /opt/summit 
+    - systemctl daemon-reload
+    - systemctl enable --now summit.service
+----
++
+Once done, click *Save* then *Apply* to close the dialog.
++
+image::images/modify_cloud_init_2.png[]
++
+In the next lab segment we'll walk through how to expose the application just like other OpenShift-hosted applications using a `Service` and `Route`.
+
+. Finally, add a label for the application
++
+The label is used to help identify which components support a particular application. It will also be used in the next lab segment for identifying objects for a `Service` definition. Labels are optional, but help with organization and managing resources in OpenShift, including virtual machines.
++
+Navigate to the *Metadata* tab for the virutal machine customization dialog, then click the *Edit* link for labels.
++
+image::images/modify_labels_1.png[]
++
+In the modal, click into the text box and enter `app=rhsummit`. The text will appear white if entered correctly. Click out of the dialog and it will convert to looking like the other labels.
++
+image::images/modify_labels_2.png[]
+
+. Click the *Create VirtualMachine* button
++
+Ensure the *Start this VirtualMachine after creation*`* checkbox is checked.
++
+image::images/modify_create_button.png[]
+
+. Login to the VM to verify the configuration
++
+This VM will take a bit of extra time after starting for cloud-init to complete the requested actions, however you can still log into the VM once it starts and boots. Once the VM starts, open the console using the tab.
++
+Login using the username `fedora` and the password `rhsummit`. This was set in cloud-init and not randomly generated by OpenShift Virtualization. You can also see this info in the GUI.
++
+image::images/modify_verify_1.png[]
++
+[NOTE]
+When logging in, if you receive a warning about the cloud-init.service being failed, it's safe to ignore. This is most likely due to cloud-init not being finished yet. 
++
+Verify the configuration of the VM was applied using these Linux commands:
++
+----
+# to see the size of the disk, which should reflect approx 39 GiB avaialble
+df -h /
+
+# to see the number of CPUs assigned to the VM, this should be 2
+nproc --all
+
+# to see the amount of memory in the VM, which should be approx 4 GiB
+free -ght
+----
++
+image::images/modify_verify_2.png[]
++
+To verify that the application was successfully deployed, use the `curl`` command.
++
+----
+curl localhost:3000
+----
++
+image::images/modify_verify_3.png[]
+
+== Virtual machine snapshots
+
+=== Create a snapshot
+
+. Navigate to the details page for a virtual machine by choosing *Virtualization* -> *VirtualMachines*, then clicking a virtual machine name.
++
+image::images/modify_snap_vm.png[]
+
+. Browse to the *Snapshots* tab, click *Add Snapshot*
++
+image::images/modify_snap_vm_snaps.png[]
+
+. In the modal, click *Save*
++
+[NOTE]
+There is a warning about the `cloudinitdisk` not being included in the snapshot. This is expected and happens because it is an ephemeral disk.
++
+image::images/modify_snap_vm_snap_save.png[]
++
+After clicking *Save*, the snapshot will show in the list. It will briefly show a status of `In Progress` before movign to `Succeeded`.
+
+. View the VM disk snapshot by browsing to *Storage* -> *VolumeSnapshots*
++
+The `VolumeSnapshot` will have a source PVC of the virutal machine's disk. If there is more than one disk configured for the VM, then a `VolumeSnapshot` will exist for each one of them.
++
+image::images/modify_snap_vm_snap_volume.png[]
+
+=== Delete a snapshot
+
+. Navigate to the details page for the virtual machine with a snapshot
++
+image::images/modify_snap_vm.png[]
+
+. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu
++
+image::images/modify_snap_delete_1.png[]
+
+. Click *Delete* in the modal

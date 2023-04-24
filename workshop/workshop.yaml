@@ -1,0 +1,12 @@
+---
+name: OpenShift Virtualization Lab
+modules:
+  activate:
+    - 0-welcome
+    - 1-getting-started
+    - 2-environment
+    - 4-create-a-vm
+    - 6-manage-vm
+    - 7-import-vm
+    - 8-vms-and-k8s
+    - review

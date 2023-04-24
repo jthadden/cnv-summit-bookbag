@@ -1,0 +1,245 @@
+:scrollbar:
+:toc2:
+
+= Import a VM and use it with a containerized application
+
+
+TODOs for this page:
+
+* find and fill variables for urls and passwords
+
+:numbered:
+
+This segment of the lab will import a virtual machine hosted in a Red Hat Virtualization environment to OpenShift Virtualization using the Migration Toolkit for Virtualization. Like OpenShift Virtualization, the migration toolkits are included with OpenShift.
+
+Once the VM has been imported, we will then connect to it using Kubernetes-native methods - Services and Routes. OpenShift Virtualization is a powerful tool for enabling applications to span both containers and VMs on the same platform, allowing the application team to standardize with the Kubernetes API and automation methods. Applications hosted in virtual machines gain many of the benefits of Kubernetes, while retaining the benefits of being a VM, without having to change.
+
+Goals:
+
+* Configure the Migration Toolkit for Virtualization
+** Create a provider
+** Create network and storage mapping
+* Import a virtual machine
+* Review application modernization options
+
+== Migration Toolkit for Virtualization
+
+There are four migration toolkits:
+
+* https://developers.redhat.com/products/mtr/overview[Migration Toolkit for Runtimes] - Assist and accelerate Java application modernization and migration.
+* https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/[Migration Toolkit for Applications] - Accelerate large-scale application modernization efforts to containers and Kubernetes.
+* https://docs.openshift.com/container-platform/4.12/migration_toolkit_for_containers/about-mtc.html[Migration Toolkit for Containers] - Migrate stateful appliaction workloads between OpenShift clusters.
+* https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization] - Import virtual machines from Red Hat Virtualization (RHV), Red Hat OpenStack Platform (RHOSP), and VMware vSphere into OpenShift Virtualization.
+
+This lab uses the Migration Toolkit for Virtualization (MTV) to import a virtual machine from Red Hat Virtualization to OpenShift. The migration toolkit supports two "modes" of import:
+
+* Cold migration turns off the source virtual machine before starting the migration. This is the default migration type.
+* Warm migration copies data while the source virtual machine continues to run. Once the bulk of data has been migrated, the VM is shutdown and the final data is copied to the destination. The new VM can then be started, resulting in a much shorter period of downtime for the VM-hosted application.
+
+
+The migration toolkit has already been deployed to your cluster using the Operator. Documentation for how to install and configure the Operator can be found https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[here].
+
+If you would like to learn more about how to configure the Migration Toolkit for Virtualization, please see https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.3/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#rhv-prerequisites_mtv[here] for documentation with Red Hat Virtualization or https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.3/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#vmware-prerequisites_mtv[here] for VMware vSphere.
+
+=== Accessing the Migration Toolkit for Virtualization
+
+. Browse to https://%mtv_link%[this link] to access the migration toolkit dashboard
++
+Alternatively, you can find the URL for the migration toolkit by looking for the `virt` Route in the `openshift-mtv` namespace.
+
+. Login to MTV using the OpenShift `admin` credentials
++
+[NOTE]
+----
+username: admin
+password: %admin_password%
+----
+
+. Click *Get started* to move to the next screen
++
+image::images/import_get_started.png[]
+
+=== Add the RHV provider
+
+The first step to importing virtual machines is to add a source provider. The cluster hosting the Migration Toolkit for Virtualization is already added as a provider, which will be used as the destination.
+
+. From the *Providers* panel, click the *Add provider* button
++
+image::images/import_add_provider_1.png[]
+
+. Select *Red Hat Virtualization* from the provider type drop down
++
+image::images/import_add_provider_2.png[]
+
+. Complete the provider details
++
+* Name: `rhv-summit`
+* RHV Manager hostname or IP address: `rhvm.cnv.infra.opentlc.com`
+* RHV Manager user name: `%rhv_username%`
+* RHV Manager password: `%rhv_password`
+* CA certificate:
++
+  -----BEGIN CERTIFICATE-----
+  MIID9DCCAtygAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwWDELMAkGA1UEBhMCVVMxHjAcBgNVBAoM
+  FWNudi5pbmZyYS5vcGVudGxjLmNvbTEpMCcGA1UEAwwgcmh2bS5jbnYuaW5mcmEub3BlbnRsYy5j
+  b20uMjk5NTYwHhcNMjMwMzAxMjA0OTUwWhcNNDMwMjI1MjA0OTUwWjBYMQswCQYDVQQGEwJVUzEe
+  MBwGA1UECgwVY252LmluZnJhLm9wZW50bGMuY29tMSkwJwYDVQQDDCByaHZtLmNudi5pbmZyYS5v
+  cGVudGxjLmNvbS4yOTk1NjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKnqGGFwAWYt
+  LY1BjayiZnMenzKt369B0yhK5zuoX8fFdJC+X3nwGN8MmpshpFdMK8WGiyM9BjL1t4/UhlTsnEB5
+  YcPyyvAfjT4a5adGPdN0iEI8VBtn2eGuOpSdyPJmv33Ef+IaS7oCcYKZPiOztSn+Rzy8SncrAGa5
+  +nhXN/6rTvTc2vTv+UMTK6ozIYZg5aEcengOtS8u2fTIDNeMBZIqcH0CHu5phuGtkPdUtx9+/m2t
+  bnBWCwa9iIeGukNNNpdsS/KCzJLh/qRu3tcNaURcp6E2RSNh37+Z1A+/gxW+/YrvHy9eDY/V8M/u
+  ZNAlLuakwqXTRkEsKrND0q61+fECAwEAAaOBxzCBxDAdBgNVHQ4EFgQU6cXhwojVLqRZnpb6jND7
+  J4PBe2MwgYEGA1UdIwR6MHiAFOnF4cKI1S6kWZ6W+ozQ+yeDwXtjoVykWjBYMQswCQYDVQQGEwJV
+  UzEeMBwGA1UECgwVY252LmluZnJhLm9wZW50bGMuY29tMSkwJwYDVQQDDCByaHZtLmNudi5pbmZy
+  YS5vcGVudGxjLmNvbS4yOTk1NoICEAAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYw
+  DQYJKoZIhvcNAQELBQADggEBADP+YTXYVGOx2mOQkmmFBkRM0i9mxD3pLxWXCCrhcOUi6c45Z8pi
+  NUmFjJTc6+/TjcqLMdeuUvybw48D1NGlwQhLSUgKXyt373lclb5gcankCSmq+lf5Sx0O9vx3VNkM
+  q0YekoEE8BGrFDmGlQnCCDA1LFL86XcBr4dgEsOcmhI++ytz6lCdPSEJ+FKukKT9KEucwxb3SKyg
+  k9XCB/QWKbJxRkr6NvyDqPir1m9/CMy210Ct6RWPKIZVDJXxmrjT+TnZU0idv2XK8P4Tn60kJPHr
+  317nu4QbnejU9CukFdug4ti6y2zKahjxaZuSqibRVq2Njup0oQmOg0glyoefnFg=
+  -----END CERTIFICATE-----
++
+When data entry is done, click the *Add* button.
++
+image::images/import_add_provider_3.png[]
+
+. Wait for the provider status to go from `Validating` to `Ready`
++
+image::images/import_add_provider_4.png[]
+
+=== Create a network mapping
+
+When importing virtual machines the migration toolkit needs to understand how to map a network used by a source VM to a network avaialble in the destination OpenShift cluster. This step will create a map for this purpose.
+
+[NOTE]
+This environment only has one network avaialble, the SDN, however you can configure the cluster to use as many VLAN and other networks as needed for your virtual machines. This is done using the https://docs.openshift.com/container-platform/4.12/networking/k8s_nmstate/k8s-nmstate-about-the-k8s-nmstate-operator.html[NMstate Operator] in OpenShift. See https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/vm_networking/virt-attaching-vm-multiple-networks.html[here] for examples of how to configure bonds, bridges, VLAN interfaces and more to connect your VMs.
+
+. Browse to *Mappings*, select the *Network* tab, click *Create mapping*
++
+image::images/import_add_network_1.png[]
+
+. In the modal, input the values below, click *Create*
++
+* Type: `Network`
+* Name: `public-to-sdn`
+* Source provider: `rhv-summit`. This will match the name given to the provider created in the previous step.
+* Target provider: `host`
+* Source networks: `Public`
+* Target namespaces / networks: `Pod network (default)`
++
+The *Source networks* and *Target namesapces / networks* fields will not appear until the other fields have been filled.
++
+image::images/import_add_network_2.png[]
+
+=== Create a storage mapping
+
+Similar the network mapping, the storage mapping tells the migration toolkit which destination storage class to use for PVCs holding VM disks from specific source storage domains.
+
+[NOTE]
+This lab uses https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[OpenShift Data Foundation] (ODF), a Kubernetes-native storage solution that utilizes the storage resources of the OpenShift nodes to create a pool of storage that can be used by Pods and virtual machines. However, OpenShift Virtualization works with any CSI storage provisioner. `ReadWriteMany` PVCs are required for live migration, work with your storage vendor to understand the configuration and capabilities of the storage device you're using.
+
+. Browse to the *Mappings* -> *Storage* tab, click *Create mapping*
++
+image::images/import_add_storage_1.png[]
+
+. In the modal, input the values below, click *Create*
++
+* Type: `Storage`
+* Name: `vmstore-to-rbd`
+* Source provider: `rhv-summit`. This will match the name given to the provider created in the previous step.
+* Target provider: `host`
+* Source storage domains: `vmstore00`
+* Target storage classes: `ocs-storagecluster-ceph-rbd`
++
+As with the network mapping, the last two options will not appear until the other fields are completed.
++
+image::images/import_add_storage_2.png[]
+
+== Import a virtual machine
+
+Once the mappings have been created, we can begin to import virtual machines to OpenShift. Migration plans are used to coordinate the movement of one or more virtual machines, in parallel or sequentially, from source hypervisor to OpenShift.
+
+=== Create a migration plan
+
+. From the navigation menu, browse to *Migration Plans*, click the *Create plan* button
++
+image::images/import_migration_plan_1.png[]
+
+. In the *General* pane, complete the fields. Click *Next* when done.
++
+* Plan name: `summit-oracle`
+* Source provider: `rhv-summit`
+* Target provider: `host`
+* Target namespace: `rhsummit`. If you did not create this namespace in a previous step you can choose a different namespace or cancel the migration plan wizard, create the namespace, then restart this step.
++
+image::images/import_migration_plan_2.png[]
+
+. Check the box for *All datacenters*, click *Next*
++
+image::images/import_migration_plan_3.png[]
+
+. Select the *oracle-%guid%* virtual machine, click *Next*
++
+Filter the VMs by clicking the funnel icon to open the filter prompt, then putting %guid% into the search box and clicking the magnifying glass icon.
++
+image::images/import_migration_plan_4.png[]
+
+. Choose the `public-to-sdn` network mapping, click *Next*
++
+If you used a different name in the earlier step, choose the option that name here.
++
+image::images/import_migration_plan_5.png[]
+
+. Choose the `vmstore-to-rbd` storage mapping, click *Next*
++
+If you used a different name in the earlier step, choose the option that name here.
++
+image::images/import_migration_plan_6.png[]
+
+. Choose *Cold migration*, click *Next*
++
+image::images/import_migration_plan_7.png[]
+
+. Press *Next* on the hooks page
++
+Hooks utilize Ansible playbooks to perform actions before or after the migration. For example, reconfiguring the application or infrastructure, e.g. a load balancer, to stop using the virtualized application while it's being migrated.
++
+No hooks are needed for this lab, we can move past this step.
++
+image::images/import_migration_plan_8.png[]
+
+. Review and click *Finish*
++
+image::images/import_migration_plan_9.png[]
+
+=== Start the migration plan to import the VM
+
+This step is *optional*. Importing the virutal machine can take 20-40 minutes, or longer, depending on several factors, as a result the lab already has the virtual machine imported to the `retail-user` namespace with the name `oracle-database`.
+
+. After completing the previous step, the migration plan will be visible from the list found under the *Migration Plans* menu item. A terse overview of the migration can be seen by expanding the carrot to the left of the name. When you're ready, click the *Start* button for the migration plan.
++
+image::images/import_start_plan_1.png[]
+
+. Confirm the action by pressing *Start* in the modal. 
++
+image::images/import_start_plan_2.png[]
+
+. After pressing the *Start* button, the window will redirect to the migration details screen. After a moment, the plan will change status to `Initialize migration`, followed by `Transfer disks`. To see additional details, expand the item using the carrot to the let of the VM's name.
++
+image::images/import_start_plan_3.png[]
+
+. Wait and watch the transfer progress
++
+The import job is running as a Pod in the `rhsummit` namespace (or whatever namespace you used for the destination). From the OpenShift UI, browse to *Workloads* -> *Pods*, select the Pod with a name starting with `importer-summit-oracle` and view the logs to see the exact status.
++
+image::images/import_start_plan_3.png[]
+
+[NOTE]
+Some changes have been made to the infrastructure supporting the RHV import. The import job _may_ fail. As noted above, this _will not_ affect your ability to complete the lab as the virtual machine is already avaialble in the `retail-user` namespace.
+
+== Application modernization
+
+This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please refer to the lab guide https://app-mod-ilt-m3-app-mod-guides.%cluster_url%/app-mod-ilt-m3/main/[here].
+
+Alternatively, please attend one of the Modern Application Development workshops offered at Red Hat Summit.
