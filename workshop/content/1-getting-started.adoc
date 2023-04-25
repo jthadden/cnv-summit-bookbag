@@ -34,10 +34,14 @@ The OpenShift console is the primary GUI-based interface used by administrators 
 
 To login to the console:
 
-* Open [this link](https://link_goes_here), or copy/paste this url: https://link_goes_here, in a new tab or window
+* Open link:%console_url%[this link], or copy/paste this url: %console_url%, in a new tab or window
 * Use the credentials below
-  
-  username: kubeadmin
-  password: password
++
+----
+username: %username%
+password: %password%
+----
++
+image::images/starting_console_login.png[]
 
-<img border="1" src="img/console_login.png
+Once you have successfully logged into the OpenShift administrator console, please continue to the next segment of the lab.

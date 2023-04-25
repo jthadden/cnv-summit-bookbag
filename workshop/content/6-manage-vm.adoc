@@ -16,6 +16,8 @@ Goals:
 
 == Customizing a VM at creation
 
+This section of the lab will focus on modifying and customizing a virtual machine during the creation process, including setting different CPU and memory values, a larger operating system disk, setting a taint for scheduling, using cloud-init to install an application, and, finally, adding a label to the virtual machine so that it can be identified like other Kubernetes objects.
+
 . In the navigation menu, browse to *Virtualization* -> *VirtualMachines*
 +
 Make sure you're using the `rhsummit` project.
@@ -154,19 +156,30 @@ Once done, click *Save* then *Apply* to close the dialog.
 +
 image::images/modify_cloud_init_2.png[]
 +
-In the next lab segment we'll walk through how to expose the application just like other OpenShift-hosted applications using a `Service` and `Route`.
+In the next lab step we'll walk through how to expose the application just like other OpenShift-hosted applications using a `Service` and `Route`.
 
 . Finally, add a label for the application
 +
 The label is used to help identify which components support a particular application. It will also be used in the next lab segment for identifying objects for a `Service` definition. Labels are optional, but help with organization and managing resources in OpenShift, including virtual machines.
 +
-Navigate to the *Metadata* tab for the virutal machine customization dialog, then click the *Edit* link for labels.
+Virtual machines deployed with OpenShift Virtualization consist of two components: 1) the virtual machine definition itself, and 2) when running, a `Pod` wherein the libvirt KVM process is running. For this step, we want to add a label to the `Pod` created when the VM is started, which means we need to edit the YAML definition. 
++
+Begin by browsing to the VM's YAML tab. Scroll down to the `spec.template.metadata.labels` section. If you've been following this lab guide, it should be approximately line 127. Add a new line for `app: rhsummit`.
 +
 image::images/modify_labels_1.png[]
 +
-In the modal, click into the text box and enter `app=rhsummit`. The text will appear white if entered correctly. Click out of the dialog and it will convert to looking like the other labels.
+[NOTE]
+====
+This step is optional. If you also want to label the VM definition, which is useful for many reasons, then follow these steps.
+
+. Navigate to the *Metadata* tab for the virutal machine customization dialog, then click the *Edit* link for labels.
++
+image::images/modify_labels_1.png[]
+
+. In the modal, click into the text box and enter `app=rhsummit`. The text will appear white if entered correctly. Click out of the dialog and it will convert to looking like the other labels.
 +
 image::images/modify_labels_2.png[]
+====
 
 . Click the *Create VirtualMachine* button
 +
@@ -209,6 +222,10 @@ curl localhost:3000
 image::images/modify_verify_3.png[]
 
 == Virtual machine snapshots
+
+Snapshots of virtual machines create a point-in-time recovery objective allowing the VM to be reset back to the state of when the snapshot was created. OpenShift Virtualization relies on the CSI storage provider's snapshot capability to create disk snapshots for the virtual machine, which can be taken "online", while the VM is running, or "offline", while the VM is powered off. If the KVM integrations are installed to the VM, you will also have the option of quiesing the guest operating system.
+
+Since disk snapshots are dependent on the storage implementation, abstracted by CSI, performance impact and capacity used will depend on the storage provider. Work with your storage vendor to determine how the system will manage PVC snapshots and the impact they may, or may not, have.
 
 === Create a snapshot
 
