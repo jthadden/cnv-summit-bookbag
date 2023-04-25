@@ -1,12 +1,6 @@
-:markup-in-source: verbatim,attributes,quotes
 
 == Review
 
-Hopefully you learned a few things in this lab:
+Thank you for joining us at Red Hat Summit 2023!
 
-* Thing one
-* Thing two
-
-For more information... etc...
-
-Thank you!
+If you would like to learn more about OpenShift Virtualization, please visit the https://www.redhat.com/en/technologies/cloud-computing/openshift/virtualization[landing page], review the https://docs.openshift.com/container-platform/latest/virt/about-virt.html[documentation], or view some of our demo videos on https://www.youtube.com/playlist?list=PLaR6Rq6Z4IqeQeTosfoFzTyE_QmWZW6n_[YouTube].
