@@ -11,7 +11,7 @@ modules:
     name: Getting started
     exit_sign: Continue
   2-environment:
-    name: 
+    name: The lab environment
     exit_sign: Continue
   4-create-a-vm:
     name: Creating a VM
