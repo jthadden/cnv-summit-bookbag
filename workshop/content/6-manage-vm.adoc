@@ -50,7 +50,7 @@ image::images/modify_edit_resources.png[]
 +
 In the modal that appears, use the plus/minus or type new values into the CPU and memory boxes. When done, click the *Save* button.
 +
-image::images/modify_edit_resources.png[]
+image::images/modify_edit_values.png[]
 
 . Modify the size of the root disk
 +
@@ -164,13 +164,13 @@ The label is used to help identify which components support a particular applica
 +
 Virtual machines deployed with OpenShift Virtualization consist of two components: 1) the virtual machine definition itself, and 2) when running, a `Pod` wherein the libvirt KVM process is running. For this step, we want to add a label to the `Pod` created when the VM is started, which means we need to edit the YAML definition. 
 +
-Begin by browsing to the VM's YAML tab. Scroll down to the `spec.template.metadata.labels` section. If you've been following this lab guide, it should be approximately line 127. Add a new line for `app: rhsummit`.
+Begin by browsing to the VM's YAML tab. Scroll down to the `spec.template.metadata.labels` section. If you've been following this lab guide, it should be approximately line 127. Add a new line for `app: rhsummit`. When complete, click the *Save* button.
 +
-image::images/modify_labels_1.png[]
+image::images/modify_labels_3.png[]
 +
 [NOTE]
 ====
-This step is optional. If you also want to label the VM definition, which is useful for many reasons, then follow these steps.
+This step is _optional_. If you also want to label the VM definition, which is useful for many reasons, then follow these steps.
 
 . Navigate to the *Metadata* tab for the virutal machine customization dialog, then click the *Edit* link for labels.
 +

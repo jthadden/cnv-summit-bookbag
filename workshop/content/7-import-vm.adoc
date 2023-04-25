@@ -3,11 +3,6 @@
 
 = Import a VM and use it with a containerized application
 
-
-TODOs for this page:
-
-* find and fill variables for urls and passwords
-
 :numbered:
 
 This segment of the lab will import a virtual machine hosted in a Red Hat Virtualization environment to OpenShift Virtualization using the Migration Toolkit for Virtualization. Like OpenShift Virtualization, the migration toolkits are included with OpenShift.

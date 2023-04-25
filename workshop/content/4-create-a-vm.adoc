@@ -37,7 +37,7 @@ image::images/create_quickstarts.png[]
 +
 Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage.
 +
-image::images/create_overview_consumers_png[]
+image::images/create_overview_consumers.png[]
 
 == Create a new virtual machine from a template
 

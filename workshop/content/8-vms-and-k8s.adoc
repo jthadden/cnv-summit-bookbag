@@ -25,7 +25,7 @@ Goals:
 
 
 [IMPORTANT]
-This segment of the lab assumes you have completed the activity _Customizing a VM at creation_ from the previous segment. If you have not completed that activity, you can still use the virtual machine in the `retail-user1` project to create a `Service`, however the remaining steps for verifying the application shown here will not work for that VM.
+This segment of the lab assumes you have completed the activity _Customizing a VM at creation_ from the "Managing VMs" segment. If you have not completed that activity, you can still use the virtual machine in the `retail-user1` project to create a `Service`, however the remaining steps for verifying the application shown here will not work for that VM.
 
 == Exposing VM-hosted applications using the SDN
 
