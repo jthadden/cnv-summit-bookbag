@@ -20,28 +20,22 @@ OpenShift Virtualization gives OpenShift the ability to deploy, manage, and conn
 
 == Why switch from a traditional VM platform?
 
-**Adopt Cloud-native development and/or Cloud-native operations**
-
+**Adopt Cloud-native development and/or Cloud-native operations:**
 Red Hat OpenShift helps your team build applications with speed, agility, confidence, and choice. Code in production mode, anywhere you choose to build. Get back to doing work that matters.
 
-**Complete app dev stack**
-
+**Complete app dev stack:**
 Red Hat CodeReady Workspaces, Runtimes, Integration and Process Automation, Serverless, Pipelines, and more with security throughout
 
-**Shift infrastructure spend to innovation**
-
+**Shift infrastructure spend to innovation:**
 OpenShift native architecture changes the heavyweight cost structure from SDDC legacy to lightweight container-native frameworks
 
-**Risk mitigation**
-
+**Risk mitigation:**
 With OpenShift support for on-premises and public cloud options, OpenShift is insurance against public cloud lock-in. 
 
-**Independent from Infrastructure**
-
+**Independent from Infrastructure:**
 Red Hat OpenShift runs consistently on bare metal, on-premises virtualization, or public cloud for ultimate choice and flexibility of deployment and updates.
 
-**Pure open source innovation**
-
+**Pure open source innovation:**
 The innovation in Kubernetes, serverless, service mesh, Kubernetes Operators, and more powered by the velocity of open source, with Red Hat in the lead.
 
 == Next steps
