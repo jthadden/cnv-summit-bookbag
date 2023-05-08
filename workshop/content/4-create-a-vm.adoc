@@ -18,7 +18,7 @@ Goals of this section:
 [NOTE]
 Before getting started, please ensure you have opened the OpenShift administrator's console in a different tab/window and have logged in with the `admin` credentials.
 
-== OpenShift Virtalization Overview Dashboard
+== OpenShift Virtualization Overview Dashboard
 
 The overview dashboard provides a cluster-level view of virtual machines and resources used, along with status information for the health of OpenShift Virtualization and virtual machines. It is a useful starting point for administrators who want a quick and high-level view of what's happening with OpenShift Virtualization.
 
@@ -29,13 +29,13 @@ image::images/create_overview.png[]
 This overview page provides the OpenShift Virtualization administrator a global overview of the virtual machines in the cluster. 
 +
 [NOTE]
-If the *Getting started resources` panel is shown (dismiss it if you'd like using the three-dots menu in the upper right corner of the panel), use the links there to access more information about OpenSHift virtualization, including Quick Starts which provide a guided walk through of how to create a VM and upload a custom boot source for your virtual machines.
+If the `Getting started resources` panel is shown (dismiss it if you'd like using the three-dots menu in the upper right corner of the panel), use the links there to access more information about OpenShift virtualization, including Quick Starts which provide a guided walk through of how to create a VM and upload a custom boot source for your virtual machines.
 +
 image::images/create_quickstarts.png[]
 
 . Review the top consumers
 +
-Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage.
+Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage. Note that in a newly created cluster there are no consumers, so there is not much to see in the beginning.
 +
 image::images/create_overview_consumers.png[]
 
