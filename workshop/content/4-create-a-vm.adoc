@@ -37,7 +37,7 @@ image::images/create_quickstarts.png[]
 +
 Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage. Note that in a newly created cluster there are no consumers, so there is not much to see in the beginning.
 +
-image::images/create_overview_consumers.png[]
+image::images/create_overview_consumers_png.png[]
 
 == Create a new virtual machine from a template
 
