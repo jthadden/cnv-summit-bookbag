@@ -81,7 +81,7 @@ The labels for `*.node.kubevir.io` indicate which features are supported by this
 +
 image::images/environment_metal_node_allocatable.png[]
 +
-Scroll further down in the node's YAML details to the `status.allocatable` stanza. The values here indicate what special hardware types are avaialble to be used by VMs and other Pods. If the node had one or more GPUs, large/huge pages, or other devices such as SR-IOV / DPDK networking devices they would show up in this section as being available.
+Scroll further down in the node's YAML details to the `status.allocatable` stanza. The values here indicate what special hardware types are available to be used by VMs and other Pods. If the node had one or more GPUs, large/huge pages, or other devices such as SR-IOV / DPDK networking devices they would show up in this section as being available.
 
 == The OpenShift Virtualization Operator
 
@@ -137,7 +137,7 @@ image::images/environment_pvc_namespace.png[]
 
 . Select one of the PVCs, click the name to see the detailed overview
 +
-Each of the PVCs will come from the `ocs-storagecluster-ceph-rbd` storage class, provided by OpenShift Data Foundation. The details of the PVC show that it is a `ReadWriteMany` PVC, which is required for live migration, and is using `block` mode. The mode can be `block` or `file`, depending on the vendor, and either will work so long as `RWX` mode is avaialble.
+Each of the PVCs will come from the `ocs-storagecluster-ceph-rbd` storage class, provided by OpenShift Data Foundation. The details of the PVC show that it is a `ReadWriteMany` PVC, which is required for live migration, and is using `block` mode. The mode can be `block` or `file`, depending on the vendor, and either will work so long as `RWX` mode is available.
 +
 The capacity should be large enough to hold the base operating system and any packages/software installed that will be used by any VMs created from this template disk. VMs created from the disk can increase the size of the disk, but cannot shrink it.
 +
