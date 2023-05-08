@@ -18,24 +18,23 @@ additionally open the OpenShift console in a separate browser window** (you
 will get the URL from your instructor).
 
 
-While progressing through the lab, you'll be able to _copy_ commands to be used in the terminal on the right of this window. The commands to be copied will be indicated using the copy symbol: <span class="fas fa-copy"></span>.
+While progressing through the lab, you'll be able to _copy_ commands to be used in the terminal on the right of this window. The commands to be copied will be indicated using the copy symbol, when you hover over the code:
 
 [source]
 ---------------------------
 oc get node
 ---------------------------
 
-If, when copying the value, you need to first edit the value before being used, this will be indicated using the user edit symbol: <span class="fas fa-user-edit"></span>.
+If, when copying the value, you need to first edit the value before being used, this will be indicated using the user edit symbol, when you hover over the code:
 
 [source]
 ---------------------------
-```copy-and-edit```
 oc get node node-name-goes-here
 ---------------------------
 
 Clicking on the displayed value will again copy it into the clipboard and you can then paste it to the required location. Before the value is used though, you should make any changes as instructed. How you paste a value into the terminal/UI will depend on the operating system and browser being used. For macOS you should be able to use `<Command-v>`. On Linux and Windows, try `<Ctrl-v>` or `<Ctrl-Shift-v>`.
 
-If at any time a glitch occurs and the workshop content does not display properly because of a network issue, and so an error is displayed, or it shows as a white page, select the drop-down menu at the top right corner, above the terminals and select "**Reload Workshop**". That menu item will reload just the workshop content and leave you on the same page.
+If at any time a glitch occurs and the workshop content does not display properly because of a network issue, and an error is displayed, or it shows as a white page, select the drop-down menu at the top right corner, above the terminals and select "**Reload Workshop**". That menu item will reload just the workshop content and leave you on the same page.
 
 Where possible, don't refresh the browser window as you will be reverted back to the welcome page (it will not remove any progress that you've made) - you will need to navigate back to where you were. If you have any issues which using the reload menu items do not solve, please ask for help!
 
