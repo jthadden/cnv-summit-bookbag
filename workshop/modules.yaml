@@ -20,7 +20,7 @@ modules:
     name: Managing VMs
     exit_sign: Continue
   7-import-vm:
-    name: Import a VM
+    name: VM Migration
     exit_sign: Continue
   8-vms-and-k8s:
     name: Using Kubernetes features with VMs
