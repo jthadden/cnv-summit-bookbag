@@ -49,6 +49,7 @@ image::images/connect_service_1.png[]
 
 . The `Service` definition is YAML based. Copy/paste the below YAML to create the `Service`. Once done, click the *Create* button.
 +
+[source]
 ----
 apiVersion: v1
 kind: Service
@@ -105,7 +106,7 @@ image::images/connect_route_4.png[]
 
 == Connecting to VM-hosted applications within OpenShift
 
-A `Serivce` allows the Pods and VMs identified by the selector to be quickly and easily consumed by any other Pod or VM in the cluster, while the `Route` enables access from external to the cluster. Let's use a VM from a different project to connect to the VM deployed for Red Hat Summit.
+A `Service` allows the Pods and VMs identified by the selector to be quickly and easily consumed by any other Pod or VM in the cluster, while the `Route` enables access from external to the cluster. Let's use a VM from a different project to connect to the VM deployed for Red Hat Summit.
 
 . In the left navigation pane, browse to *Virtualization* -> *VirtualMachines*, then change to the `retail-user1` project. A virtual machine named `oracle-database` has already been created.
 +
@@ -138,6 +139,7 @@ image::images/connect_access_4.png[]
 [IMPORTANT]
 ====
 If you receive an error about the hostname not being resolved, this is because the guest OS was not reconfigured for the SDN after being imported. You can temporarily fix this with the following command:
+[source]
 ----
 cat << EOF | sudo tee /etc/resolv.conf
 search svc.cluster.local cluster.local aio.example.com

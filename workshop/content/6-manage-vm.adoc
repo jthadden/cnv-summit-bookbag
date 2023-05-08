@@ -5,7 +5,7 @@
 
 :numbered:
 
-In this segment of the lab we will accomplish some common virtual machine management tasks via the GUI. The OpenShift administrator console plugin for OpenShift Virtualization makes the process of changing, adding, and removing VM configuration straightforward and familiar, however you can also choose to use the CLI to edit the YAML definition directly. 
+In this segment of the lab we will accomplish some common virtual machine management tasks via the GUI. The OpenShift administrator console plugin for OpenShift Virtualization makes the process of changing, adding, and removing VM configuration straightforward and familiar, however you can also choose to use the CLI to edit the YAML definition directly.
 
 Each virtual machine is an object, like all things deployed using Kubernetes, so we can interact with it using the same tools and processes as any other Kubernetes object. However, we will not be focusing on that during this lab. If you want to lean more about https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-create-vms.html#virt-creating-vm-cli_virt-create-vms[creating] and https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-edit-vms.html#virt-editing-vm-cli_virt-edit-vms[editing] virutal machines using YAML, please refer to https://docs.openshift.com/container-platform/4.12/virt/virt-using-the-cli-tools.html[the documentation].
 
@@ -203,7 +203,7 @@ Verify the configuration of the VM was applied using these Linux commands:
 +
 [source]
 ----
-# to see the size of the disk, which should reflect approx 39 GiB avaialble
+# to see the size of the disk, which should reflect approx 39 GiB available
 df -h /
 
 # to see the number of CPUs assigned to the VM, this should be 2

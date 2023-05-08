@@ -1,13 +1,13 @@
 :scrollbar:
 :toc2:
 
-= Import a VM and use it with a containerized application
+= Migrate a VM and use it with a containerized application
 
 :numbered:
 
 This segment of the lab will import a virtual machine hosted in a Red Hat Virtualization environment to OpenShift Virtualization using the Migration Toolkit for Virtualization. Like OpenShift Virtualization, the migration toolkits are included with OpenShift.
 
-Once the VM has been imported, we will then connect to it using Kubernetes-native methods - Services and Routes. OpenShift Virtualization is a powerful tool for enabling applications to span both containers and VMs on the same platform, allowing the application team to standardize with the Kubernetes API and automation methods. Applications hosted in virtual machines gain many of the benefits of Kubernetes, while retaining the benefits of being a VM, without having to change.
+Once the VM has been imported, we will then connect to it using Kubernetes-native methods - Services and Routes. OpenShift Virtualization is a powerful tool for enabling applications to span both containers and VMs on the same platform, allowing the application team to standardize with the Kubernetes API and automation methods. Applications hosted in virtual machines gain many of the benefits of Kubernetes, while retaining the benefits of being a VM.
 
 Goals:
 
@@ -23,8 +23,8 @@ There are four migration toolkits:
 
 * https://developers.redhat.com/products/mtr/overview[Migration Toolkit for Runtimes] - Assist and accelerate Java application modernization and migration.
 * https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/[Migration Toolkit for Applications] - Accelerate large-scale application modernization efforts to containers and Kubernetes.
-* https://docs.openshift.com/container-platform/4.12/migration_toolkit_for_containers/about-mtc.html[Migration Toolkit for Containers] - Migrate stateful appliaction workloads between OpenShift clusters.
-* https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization] - Import virtual machines from Red Hat Virtualization (RHV), Red Hat OpenStack Platform (RHOSP), and VMware vSphere into OpenShift Virtualization.
+* https://docs.openshift.com/container-platform/4.12/migration_toolkit_for_containers/about-mtc.html[Migration Toolkit for Containers] - Migrate stateful application workloads between OpenShift clusters.
+* https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization] - Import virtual machines from Red Hat Virtualization (RHV) and VMware vSphere into OpenShift Virtualization. The ability to migrate from Red Hat OpenStack Platform (RHOSP) and OpenShift Virtualization (OCP-V) will follow in the next versions of MTV.
 
 This lab uses the Migration Toolkit for Virtualization (MTV) to import a virtual machine from Red Hat Virtualization to OpenShift. The migration toolkit supports two "modes" of import:
 
@@ -105,10 +105,10 @@ image::images/import_add_provider_4.png[]
 
 === Create a network mapping
 
-When importing virtual machines the migration toolkit needs to understand how to map a network used by a source VM to a network avaialble in the destination OpenShift cluster. This step will create a map for this purpose.
+When importing virtual machines the migration toolkit needs to understand how to map a network used by a source VM to a network available in the destination OpenShift cluster. This step will create a map for this purpose.
 
 [NOTE]
-This environment only has one network avaialble, the SDN, however you can configure the cluster to use as many VLAN and other networks as needed for your virtual machines. This is done using the https://docs.openshift.com/container-platform/4.12/networking/k8s_nmstate/k8s-nmstate-about-the-k8s-nmstate-operator.html[NMstate Operator] in OpenShift. See https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/vm_networking/virt-attaching-vm-multiple-networks.html[here] for examples of how to configure bonds, bridges, VLAN interfaces and more to connect your VMs.
+This environment only has one network available, the SDN, however you can configure the cluster to use as many VLAN and other networks as needed for your virtual machines. This is done using the https://docs.openshift.com/container-platform/4.12/networking/k8s_nmstate/k8s-nmstate-about-the-k8s-nmstate-operator.html[NMstate Operator] in OpenShift. See https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/vm_networking/virt-attaching-vm-multiple-networks.html[here] for examples of how to configure bonds, bridges, VLAN interfaces and more to connect your VMs.
 
 . Browse to *Mappings*, select the *Network* tab, click *Create mapping*
 +
@@ -129,7 +129,7 @@ image::images/import_add_network_2.png[]
 
 === Create a storage mapping
 
-Similar the network mapping, the storage mapping tells the migration toolkit which destination storage class to use for PVCs holding VM disks from specific source storage domains.
+Similar to the network mapping, the storage mapping tells the migration toolkit which destination storage class to use for PVCs holding VM disks from specific source storage domains.
 
 [NOTE]
 This lab uses https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[OpenShift Data Foundation] (ODF), a Kubernetes-native storage solution that utilizes the storage resources of the OpenShift nodes to create a pool of storage that can be used by Pods and virtual machines. However, OpenShift Virtualization works with any CSI storage provisioner. `ReadWriteMany` PVCs are required for live migration, work with your storage vendor to understand the configuration and capabilities of the storage device you're using.
@@ -151,9 +151,12 @@ As with the network mapping, the last two options will not appear until the othe
 +
 image::images/import_add_storage_2.png[]
 
-== Import a virtual machine
+[NOTE]
+The above created network and storage mappings allow us now to implement a plan for the migration. The mappings can be re-used for many plans that define the actual migration plan. 
 
-Once the mappings have been created, we can begin to import virtual machines to OpenShift. Migration plans are used to coordinate the movement of one or more virtual machines, in parallel or sequentially, from source hypervisor to OpenShift.
+== Migrate a virtual machine
+
+Once the mappings have been created, we can begin to import virtual machines to OpenShift. Migration plans are used to coordinate the movement of *one or more* virtual machines, in parallel or sequentially, from the source hypervisor (here: RHV) to OpenShift.
 
 === Create a migration plan
 
@@ -208,7 +211,7 @@ image::images/import_migration_plan_8.png[]
 +
 image::images/import_migration_plan_9.png[]
 
-=== Start the migration plan to import the VM
+=== Start the migration plan to transfer the VM
 
 This step is *optional*. Importing the virutal machine can take 20-40 minutes, or longer, depending on several factors, as a result the lab already has the virtual machine imported to the `retail-user` namespace with the name `oracle-database`.
 
@@ -231,7 +234,7 @@ The import job is running as a Pod in the `rhsummit` namespace (or whatever name
 image::images/import_start_plan_3.png[]
 
 [NOTE]
-Some changes have been made to the infrastructure supporting the RHV import. The import job _may_ fail. As noted above, this _will not_ affect your ability to complete the lab as the virtual machine is already avaialble in the `retail-user` namespace.
+Some changes have been made to the infrastructure supporting the RHV import. The import job _may_ fail. As noted above, this _will not_ affect your ability to complete the lab as the virtual machine is already available in the `retail-user` namespace.
 
 == Application modernization
 
