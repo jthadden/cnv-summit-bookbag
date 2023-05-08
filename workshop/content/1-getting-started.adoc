@@ -8,19 +8,30 @@ During this lab we will spend some time getting familiar with the aspects of Ope
 
 == The lab environment
 
-This lab environment utilizes the Bookbag interface for presenting an interactive lab guide. **We recommend that you open the OpenShift console in a separate browser window.** Afterward, adjust the sizing to feel appropriate so that you can see the lab guide and the console at the same time.
+This lab environment utilizes the Bookbag interface for presenting an interactive lab guide. **We recommend that you open the OpenShift console in a separate browser window (you will get the URL from your instructor).** Afterward, adjust the sizing to feel appropriate so that you can see the lab guide and the console at the same time.
+
+This lab environment utilizes the Bookbag interface for presenting an
+interactive lab guide. It consists of a view of this guide and a terminal
+to the right. Adjust the sizing to feel appropriate so that you can see
+the lab guide and the console at the same time. **We recommend that you
+additionally open the OpenShift console in a separate browser window** (you
+will get the URL from your instructor).
+
 
 While progressing through the lab, you'll be able to _copy_ commands to be used in the terminal on the right of this window. The commands to be copied will be indicated using the copy symbol: <span class="fas fa-copy"></span>.
 
-```copy
+[source]
+---------------------------
 oc get node
-```
+---------------------------
 
 If, when copying the value, you need to first edit the value before being used, this will be indicated using the user edit symbol: <span class="fas fa-user-edit"></span>.
 
-```copy-and-edit
+[source]
+---------------------------
+```copy-and-edit```
 oc get node node-name-goes-here
-```
+---------------------------
 
 Clicking on the displayed value will again copy it into the clipboard and you can then paste it to the required location. Before the value is used though, you should make any changes as instructed. How you paste a value into the terminal/UI will depend on the operating system and browser being used. For macOS you should be able to use `<Command-v>`. On Linux and Windows, try `<Ctrl-v>` or `<Ctrl-Shift-v>`.
 
