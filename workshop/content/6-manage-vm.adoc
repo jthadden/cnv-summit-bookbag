@@ -54,7 +54,7 @@ image::images/modify_edit_values.png[]
 
 . Modify the size of the root disk
 +
-For this virtual machine we are going to increase the size of the OS disk. Start by moving to the *Disks* tab in the interface. For the `rootdisk`, choose the *Edit* menu option.
+For this virtual machine we are going to increase the size of the OS disk. Start by moving to the *Disks* tab in the interface. For the `rootdisk`, choose the *Edit* menu option. Note that if you don’t see the 3-dot- menu, you might need to resize your browser window.
 +
 image::images/modify_edit_disk.png[]
 +
@@ -70,7 +70,7 @@ The other fields control how the disk is created. These include:
 * Whether the disk is preallocated, i.e. "thick" provisioned. By default OpenShift Virtualization creates the VM disks as thin provisioned in the PVC.
 +
 [NOTE]
-Preallocating, or not, the VM disk does not affect how the CSI provisioner will create the volume on the backing storage device. Some storage partners will create thin/thick devices based on their own policies, often defined at the storage class level. Be sure to work with your storage team and vendor to determine the optimal setting for your environment.
+Selecting preallocation or not might not affect how the CSI provisioner will create the volume on the backing storage device. Some storage partners will create thin/thick devices based on their own policies, often defined at the storage class level. Be sure to work with your storage team and vendor to determine the optimal setting for your environment.
 
 . Add a toleration for the lab environment taint
 +
@@ -82,15 +82,15 @@ In the modal, click the *Add toleration to specify qualifying Nodes* link.
 +
 image::images/modify_edit_toleration_1.png[]
 +
-Add a *Taint key* value of `metal`, leave the *Value* and *Effect* at the defaults. The dialog will update to show that a node matches the toleration. Click *Save* to close the diaglog.
+Add a *Taint key* value of `metal`, leave the *Value* and *Effect* at the defaults. The dialog will update to show that a node matches the toleration. Click *Save* to close the dialog.
 +
 image::images/modify_edit_toleration_2.png[]
 
 . Use cloud-init to install an application
 + 
-This virtual machine will use cloud-init to automatically deploy an application. This is a very simple example which will install nodejs, place a file, and start the application. However, hopefully it sets the stage for understanding how OpenShift Virtualization could be used with existing application dev, test, and deploy operations using the same automation tools used with other virtualiation platforms.
+This virtual machine will use cloud-init to automatically deploy an application. This is a very simple example which will install nodejs, place a file, and start the application. However, hopefully it sets the stage for understanding how OpenShift Virtualization could be used with existing application dev, test, and deploy operations using the same automation tools used with other virtualization platforms.
 +
-In addition installing npm and nodejs, we are also using cloud-init to set a password for the default user `fedora`. Cloud-init is a powerful tool that can be used to conenct your virtual machines to the existing authentication/authorization solution in your environment. This configuration is for lab purpsoses only and does not reflect best, or suggested, practices.
+In addition to installing npm and nodejs, we are also using cloud-init to set a password for the default user `fedora`. Cloud-init is a powerful tool that can be used i.e. to connect your virtual machines to the existing authentication/authorization solution in your environment. This configuration is for lab purposes only and does not reflect best, or suggested, practices.
 +
 Begin by browsing to the *Scripts* tab, then selecting the *Edit* link for the Cloud-init section.
 +
@@ -98,6 +98,7 @@ image::images/modify_cloud_init_1.png[]
 +
 In the modal we want to use the *Script* option to provide a custom cloud-init script for the virtual machine. After selecting the *Script* radio button, the modal will change to show some YAML code. Select all of this code and delete it, then copy -> paste the below YAML into the dialog.
 +
+[source]
 ----
 userData: |
   #cloud-config
@@ -176,7 +177,7 @@ This step is _optional_. If you also want to label the VM definition, which is u
 +
 image::images/modify_labels_1.png[]
 
-. In the modal, click into the text box and enter `app=rhsummit`. The text will appear white if entered correctly. Click out of the dialog and it will convert to looking like the other labels.
+. In the modal, click into the text box and enter `app=rhsummit`. The text will appear in its own bubble if entered correctly. Click out of the dialog and it will convert to looking like the other labels.
 +
 image::images/modify_labels_2.png[]
 ====
@@ -200,6 +201,7 @@ When logging in, if you receive a warning about the cloud-init.service being fai
 +
 Verify the configuration of the VM was applied using these Linux commands:
 +
+[source]
 ----
 # to see the size of the disk, which should reflect approx 39 GiB avaialble
 df -h /
@@ -215,6 +217,7 @@ image::images/modify_verify_2.png[]
 +
 To verify that the application was successfully deployed, use the `curl`` command.
 +
+[source]
 ----
 curl localhost:3000
 ----
@@ -223,7 +226,7 @@ image::images/modify_verify_3.png[]
 
 == Virtual machine snapshots
 
-Snapshots of virtual machines create a point-in-time recovery objective allowing the VM to be reset back to the state of when the snapshot was created. OpenShift Virtualization relies on the CSI storage provider's snapshot capability to create disk snapshots for the virtual machine, which can be taken "online", while the VM is running, or "offline", while the VM is powered off. If the KVM integrations are installed to the VM, you will also have the option of quiesing the guest operating system.
+Snapshots of virtual machines create a point-in-time recovery objective allowing the VM to be reset back to its state when the snapshot was created. OpenShift Virtualization relies on the CSI storage provider's snapshot capability to create disk snapshots for the virtual machine, which can be taken "online", while the VM is running, or "offline", while the VM is powered off. If the KVM integrations are installed to the VM, you will also have the option of quiesing the guest operating system (quiesing ensures that the snapshot of the disk represents a consistent state of the guest file systems, e.g. buffers are flushed and the journal is consistent).
 
 Since disk snapshots are dependent on the storage implementation, abstracted by CSI, performance impact and capacity used will depend on the storage provider. Work with your storage vendor to determine how the system will manage PVC snapshots and the impact they may, or may not, have.
 
@@ -258,7 +261,7 @@ image::images/modify_snap_vm_snap_volume.png[]
 +
 image::images/modify_snap_vm.png[]
 
-. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu
+. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu, and confirm the deletion in the next modal.
 +
 image::images/modify_snap_delete_1.png[]
 
