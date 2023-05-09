@@ -24,10 +24,10 @@ OpenShift Virtualization gives OpenShift the ability to deploy, manage, and conn
 Red Hat OpenShift helps your team build applications with speed, agility, confidence, and choice. Code in production mode, anywhere you choose to build. Get back to doing work that matters.
 
 **Complete app dev stack:**
-Red Hat CodeReady Workspaces, Runtimes, Integration and Process Automation, Serverless, Pipelines, and more with security throughout
+Red Hat OpenShift Dev Spaces (formerly Red Hat CodeReady Workspaces), Runtimes, Integration and Process Automation, Serverless, Pipelines, and more with security throughout.
 
 **Shift infrastructure spend to innovation:**
-OpenShift native architecture changes the heavyweight cost structure from SDDC legacy to lightweight container-native frameworks
+OpenShift native architecture changes the heavyweight cost structure from SDDC legacy to lightweight container-native frameworks.
 
 **Risk mitigation:**
 With OpenShift support for on-premises and public cloud options, OpenShift is insurance against public cloud lock-in. 
