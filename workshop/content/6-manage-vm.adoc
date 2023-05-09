@@ -261,8 +261,8 @@ image::images/modify_snap_vm_snap_volume.png[]
 +
 image::images/modify_snap_vm.png[]
 
-. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu, and confirm the deletion in the next modal.
+. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu..
 +
 image::images/modify_snap_delete_1.png[]
 
-. Click *Delete* in the modal
+. Click *Delete* in the modal, to confirm the deletion.
