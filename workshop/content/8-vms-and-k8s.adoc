@@ -5,7 +5,7 @@
 
 :numbered:
 
-With OpenShift Virtualization, VMs are native extensions of the Kubernetes API, which means that they can use used, interfaced with, automated, and configured like any other Kubernetes object. This means all of the tools and processes that are used with Kubernetes for configuration management, such as Argo CD (OpenShift GitOps), Tekton (OpenShift Pipelines), and Istio (OpenShift Service Mesh) work with OpenShift Virtualization too.
+With OpenShift Virtualization, VMs are native extensions of the Kubernetes API, which means that they can be used, interfaced with, automated, and configured like any other Kubernetes object. This means all of the tools and processes that are used with Kubernetes for configuration management, such as Argo CD (OpenShift GitOps), Tekton (OpenShift Pipelines), and Istio (OpenShift Service Mesh) work with OpenShift Virtualization too.
 
 This segment of the lab will focus on network connectivity in and outside of the OpenShift cluster. We will use the native Kubernetes `Service` to enable discovery of the virtual machine-hosted application and then expose the application externally using an OpenShift `Route`.
 
@@ -31,9 +31,9 @@ This segment of the lab assumes you have completed the activity _Customizing a V
 
 Using a `Service` makes container and virtual machine based applications discoverable on the SDN. This makes it easy for other application components to reach them using shortened DNS names instead of tracking a potentially changing SDN IP address. 
 
-. Verify that the application is running as expected by opening the VM console, logging in, and usign the command `curl localhost:3000`
+. Verify that the application is running as expected by opening the VM console, logging in, and using the command `curl localhost:3000`
 +
-We are using the virutal machine configured in lab segment "Customizing a virtual machine at creation". This VM used cloud-init to install NodeJS and a simple page that responds with the VM's hostname. If you have not completed this process, please return to that section of the guide or, for a less complete example, use the `oracle-database` VM in the `retail-user1` namespace.
+We are using the virtual machine configured in the lab segment "Customizing a virtual machine at creation". This VM used cloud-init to install NodeJS and a simple page that responds with the VM's hostname. If you have not completed this process, please return to that section of the guide or, for a less complete example, use the `oracle-database` VM in the `retail-user1` namespace.
 +
 Browse to *Virtualization* -> *VirtualMachines*, ensure you're using the `rhsummit` project, then choose the VM created previously.
 +
@@ -43,7 +43,7 @@ The credentials are visible in the OpenShift UI by expanding the "Guest login cr
 +
 image::images/connect_verify_2.png[]
 
-. After verifying the web app is responding, in the left navigation menu brose to *Networking* -> *Services*, ensure you're viewing the `rhsummit` project. Click the *Create Service* button.
+. After verifying the web app is responding, in the left navigation menu browse to *Networking* -> *Services*, ensure you're viewing the `rhsummit` project. Click the *Create Service* button.
 +
 image::images/connect_service_1.png[]
 

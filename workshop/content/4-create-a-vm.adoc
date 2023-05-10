@@ -77,7 +77,7 @@ image::images/create_fedora_quick.png[]
 
 . Add a toleration to the virtual machine
 +
-The lab environment uses a taint on the phsical node to prevent other OpenShift workloads from running. This is not required for OpenShift Virtualization and is used only in the lab to manage workloads across the mix of physical and virutal nodes. For the newly created virtual machine to successfully schedule and run on the node, we need to add a toleration.
+The lab environment uses a taint on the phsical node to prevent other OpenShift workloads from running. This is not required for OpenShift Virtualization and is used only in the lab to manage workloads across the mix of physical and virtual nodes. For the newly created virtual machine to successfully schedule and run on the node, we need to add a toleration.
 +
 After clicking the quick create button in the last step, you will be at the virtual machine details page for the newly created virtual machine. Click the *Scheduling* tab, then the link under the *Tolerations* item.
 +
