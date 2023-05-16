@@ -16,7 +16,7 @@ Goals of this section:
 * Become familiar with VM configuration using the OpenShift interface
 
 [NOTE]
-Before getting started, please ensure you have opened the OpenShift administrator's console in a different tab/window and have logged in with the `admin` credentials.
+Before getting started, please ensure you have opened and logged in into the OpenShift console in a different tab/window. Select the Administrator view at the top left of the web page.
 
 == OpenShift Virtualization Overview Dashboard
 
@@ -26,22 +26,22 @@ The overview dashboard provides a cluster-level view of virtual machines and res
 +
 image::images/create_overview.png[]
 +
-This overview page provides the OpenShift Virtualization administrator a global overview of the virtual machines in the cluster. 
+This overview page provides the OpenShift Virtualization administrator a global overview of the virtual machines in the cluster. A normal user would only see the VMs in his/her own project.
 +
 [NOTE]
-If the `Getting started resources` panel is shown (dismiss it if you'd like using the three-dots menu in the upper right corner of the panel), use the links there to access more information about OpenShift virtualization, including Quick Starts which provide a guided walk through of how to create a VM and upload a custom boot source for your virtual machines.
+If the `Getting started resources` panel is shown, use the links there to access more information about OpenShift virtualization, including Quick Starts which e.g. provide a guided walk through of how to create a VM and upload a custom boot source for your virtual machines. You can hide the panel using the three-dots menu in the upper right corner of the panel.
 +
 image::images/create_quickstarts.png[]
 
 . Review the top consumers
 +
-Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage. Note that in a newly created cluster there are no consumers, so there is not much to see in the beginning.
+Scrolling down on the page shows the VMs which are "top consumers" of various resources, including CPU, memory, and storage. Note that in a newly created cluster there are no consumers, so there is not much to see in the beginning. You might also want to dig deeper into metrics by clicking on "View virtualization dashboard". That brings you to the KubeVirt Metrics Dashboard with more data and graphs.
 +
 image::images/create_overview_consumers_png.png[]
 
 == Create a new virtual machine from a template
 
-Creating virtual machines is one of the most frequently accomplished tasks for a virtualization administrator. This section will walk through the process of creating a new virtual machine using a pre-created template. As the virtualization administrator, you have the ability to create your own tempaltes that use guest operating system disks with your organization's customizations, preferred VM sizing options, and additional customization options using cloud-init or sysprep.
+Creating virtual machines is one of the most frequently accomplished tasks for a virtualization administrator. This section will walk through the process of creating a new virtual machine using a pre-created template. As the virtualization administrator, you have the ability to create your own templates that use guest operating system disks with your organization's customizations, preferred VM sizing options, and additional customization options using cloud-init or sysprep.
 
 . From the left navigation menu, browse to *Virtualization* -> *VirtualMachines*
 +
@@ -53,7 +53,7 @@ Virtual machines, like all Kubernetes and OpenShift resources, are namespaced. T
 +
 image::images/create_project_menu.png[]
 +
-Use `rhsummit` as the name of the project, then click *Create*.
+Use your username e.g. `user9` as the name of the project, then click *Create*.
 +
 image::images/create_project_modal.png[]
 +
@@ -63,7 +63,7 @@ Once created, the interface will automatically move to the new `rhsummit` projec
 +
 image::images/create_vm_start.png[]
 +
-Reviewing the list of available templates you'll notice that some have a blue badge which indicates "Source available". These are templates which are using the automatically downloaded and stored template disks reviewed in the previous page. If you were deploying in your own environment, you have the option of removing those source disks and uploading custom disks for organization.
+Reviewing the list of available templates you'll notice that some have a blue badge which indicates "Source available". These are templates which are using the automatically downloaded and stored template disks reviewed in the previous page. If you were deploying in your own environment, you have the option of removing those source disks and uploading custom disks for your organization.
 +
 For now, let's select the *Fedora VM* card to create a new Fedora virtual machine.
 +
@@ -77,7 +77,7 @@ image::images/create_fedora_quick.png[]
 
 . Add a toleration to the virtual machine
 +
-The lab environment uses a taint on the phsical node to prevent other OpenShift workloads from running. This is not required for OpenShift Virtualization and is used only in the lab to manage workloads across the mix of physical and virtual nodes. For the newly created virtual machine to successfully schedule and run on the node, we need to add a toleration.
+The lab environment uses a taint on the physical node to prevent other OpenShift workloads from running. This is not required for OpenShift Virtualization and is used only in the lab to manage workloads across the mix of physical and virtual nodes. For the newly created virtual machine to successfully schedule and run on the node, we need to add a toleration.
 +
 After clicking the quick create button in the last step, you will be at the virtual machine details page for the newly created virtual machine. Click the *Scheduling* tab, then the link under the *Tolerations* item.
 +
@@ -87,7 +87,7 @@ In the modal dialog, click the *Add toleration to specify qualifying Nodes* link
 +
 image::images/create_toleration_1.png[]
 +
-In the *Taint key* column, enter `metal`, leaving the value column empty and the effect column with the default value of `NoSchedule`. After entering the name of the taint, the dialog will change to show that there is a matching node. Click the *Save* button to close the dialog.
+In the *Taint key* column, enter `metal`, leaving the value column empty and the effect column with the default value of `NoSchedule`. After entering the name of the taint, the dialog will change to show that there are matching nodes. Click the *Save* button to close the dialog.
 +
 image::images/create_toleration_2.png[]
 
@@ -107,7 +107,7 @@ image::images/create_running_vm.png[]
 
 . Open the console and log into the guest operating system
 +
-To open the console, we can click the link labeled `Open web console`, which will result in a new window opening, or click the tab named *Console* in the OpenShift interface. For this lab, to keep the number of tabs and windows to a minimum, we will chose the *Console* tab.
+To open the console, we can either click the link labeled `Open web console`, which will result in a new window opening, or click the tab named *Console* in the OpenShift interface. For this lab, to keep the number of tabs and windows to a minimum, we will chose the *Console* tab.
 +
 image::images/create_vm_console.png[]
 +
