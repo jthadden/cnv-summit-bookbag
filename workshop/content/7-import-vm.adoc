@@ -123,7 +123,7 @@ image::images/import_add_network_1.png[]
 * Source networks: `Public`
 * Target namespaces / networks: `Pod network (default)`
 +
-The *Source networks* and *Target namesapces / networks* fields will not appear until the other fields have been filled.
+The *Source networks* and *Target namespaces / networks* fields will not appear until the other fields have been filled.
 +
 image::images/import_add_network_2.png[]
 
@@ -132,7 +132,7 @@ image::images/import_add_network_2.png[]
 Similar to the network mapping, the storage mapping tells the migration toolkit which destination storage class to use for PVCs holding VM disks from specific source storage domains.
 
 [NOTE]
-This lab uses https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[OpenShift Data Foundation] (ODF), a Kubernetes-native storage solution that utilizes the storage resources of the OpenShift nodes to create a pool of storage that can be used by Pods and virtual machines. However, OpenShift Virtualization works with any CSI storage provisioner. `ReadWriteMany` PVCs are required for live migration, work with your storage vendor to understand the configuration and capabilities of the storage device you're using.
+This lab uses https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[OpenShift Data Foundation] (ODF), a Kubernetes-native storage solution that utilizes the storage resources of the OpenShift nodes to create a pool of storage that can be used by Pods and virtual machines. However, OpenShift Virtualization works with any CSI storage provisioner. `ReadWriteMany` PVCs are required for live migration, please work with your storage vendor to understand the configuration and capabilities of the storage device you're using.
 
 . Browse to the *Mappings* -> *Storage* tab, click *Create mapping*
 +
@@ -213,7 +213,7 @@ image::images/import_migration_plan_9.png[]
 
 === Start the migration plan to transfer the VM
 
-This step is *optional*. Importing the virutal machine can take 20-40 minutes, or longer, depending on several factors, as a result the lab already has the virtual machine imported to the `retail-user` namespace with the name `oracle-database`.
+This step is *optional*. Importing the virtual machine can take 20-40 minutes, or longer, depending on several factors. As a result the lab already has the virtual machine imported to the `retail-user` namespace with the name `oracle-database`.
 
 . After completing the previous step, the migration plan will be visible from the list found under the *Migration Plans* menu item. A terse overview of the migration can be seen by expanding the carrot to the left of the name. When you're ready, click the *Start* button for the migration plan.
 +
@@ -223,7 +223,7 @@ image::images/import_start_plan_1.png[]
 +
 image::images/import_start_plan_2.png[]
 
-. After pressing the *Start* button, the window will redirect to the migration details screen. After a moment, the plan will change status to `Initialize migration`, followed by `Transfer disks`. To see additional details, expand the item using the carrot to the let of the VM's name.
+. After pressing the *Start* button, the window will redirect to the migration details screen. After a moment, the plan will change status to `Initialize migration`, followed by `Transfer disks`. To see additional details, expand the item using the carrot to the left of the VM's name.
 +
 image::images/import_start_plan_3.png[]
 
