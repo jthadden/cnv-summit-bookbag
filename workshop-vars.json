@@ -1,4 +1,4 @@
 {
     "guid": "abcde",
-    "user": "lab-user"
+    "ocp_password": "openshift"
 }

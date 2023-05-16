@@ -1,3 +1,4 @@
+image::images/intro_summit.png[]
 
 = Welcome
 
@@ -7,7 +8,7 @@ OpenShift Virtualization enables you to bring virtual machines onto a modern, Ku
 
 == What is OpenShift Virtualization?
 
-* OpenShift Virtualization is a feature of Red Hat OpenShift Container Platform (OCP) and Red Hat OpenShift Kubernetes Engine (OKE). It is not an add-on or a separate product.
+* OpenShift Virtualization is a feature of Red Hat OpenShift, it is not an add-on or a separate product and is included with all entitlements.
 * All current and future subscribers receive OpenShift Virtualization as part of their OpenShift subscription. It has been generally available since OpenShift 4.5.
 * OpenShift Virtualization is based on the “container-native virtualization” technology being developed upstream under the KubeVirt project, which is a sandbox project in the Cloud Native Computing Foundation (CNCF). 
 * It leverages the Red Hat Enterprise Linux KVM hypervisor, which is a mature and highly performant open source hypervisor used by many organizations and cloud service providers globally and which has been under development for over 15 years. 
