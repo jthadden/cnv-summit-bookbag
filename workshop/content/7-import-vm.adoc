@@ -38,21 +38,9 @@ If you would like to learn more about how to configure the Migration Toolkit for
 
 === Accessing the Migration Toolkit for Virtualization
 
-. Browse to https://%mtv_link%[this link] to access the migration toolkit dashboard
-+
-Alternatively, you can find the URL for the migration toolkit by looking for the `virt` Route in the `openshift-mtv` namespace.
+. The migration toolkit dashboard can be found in the menu on the left side
 
-. Login to MTV using the OpenShift `admin` credentials
-+
-[NOTE]
-----
-username: admin
-password: %admin_password%
-----
-
-. Click *Get started* to move to the next screen
-+
-image::images/import_get_started.png[]
+. Click on *Providers for virtualization*
 
 === Add the RHV provider
 
@@ -71,7 +59,7 @@ image::images/import_add_provider_2.png[]
 * Name: `rhv-summit`
 * RHV Manager hostname or IP address: `rhvm.cnv.infra.opentlc.com`
 * RHV Manager user name: `%rhv_username%`
-* RHV Manager password: `%rhv_password`
+* RHV Manager password: `%rhv_password%`
 * CA certificate:
 +
   -----BEGIN CERTIFICATE-----
@@ -110,7 +98,7 @@ When importing virtual machines the migration toolkit needs to understand how to
 [NOTE]
 This environment only has one network available, the SDN, however you can configure the cluster to use as many VLAN and other networks as needed for your virtual machines. This is done using the https://docs.openshift.com/container-platform/4.12/networking/k8s_nmstate/k8s-nmstate-about-the-k8s-nmstate-operator.html[NMstate Operator] in OpenShift. See https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/vm_networking/virt-attaching-vm-multiple-networks.html[here] for examples of how to configure bonds, bridges, VLAN interfaces and more to connect your VMs.
 
-. Browse to *Mappings*, select the *Network* tab, click *Create mapping*
+. Browse to *NetworkMaps for virtualization* and click *Create NetworkMap*
 +
 image::images/import_add_network_1.png[]
 
@@ -134,7 +122,7 @@ Similar to the network mapping, the storage mapping tells the migration toolkit 
 [NOTE]
 This lab uses https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[OpenShift Data Foundation] (ODF), a Kubernetes-native storage solution that utilizes the storage resources of the OpenShift nodes to create a pool of storage that can be used by Pods and virtual machines. However, OpenShift Virtualization works with any CSI storage provisioner. `ReadWriteMany` PVCs are required for live migration, please work with your storage vendor to understand the configuration and capabilities of the storage device you're using.
 
-. Browse to the *Mappings* -> *Storage* tab, click *Create mapping*
+. Browse to the *StorageMaps for virtualization* and click *Create StorageMap*
 +
 image::images/import_add_storage_1.png[]
 
@@ -160,7 +148,7 @@ Once the mappings have been created, we can begin to import virtual machines to 
 
 === Create a migration plan
 
-. From the navigation menu, browse to *Migration Plans*, click the *Create plan* button
+. From the navigation menu, browse to *Plans for virtualization*, click the *Create plan* button
 +
 image::images/import_migration_plan_1.png[]
 
@@ -169,7 +157,7 @@ image::images/import_migration_plan_1.png[]
 * Plan name: `summit-oracle`
 * Source provider: `rhv-summit`
 * Target provider: `host`
-* Target namespace: `rhsummit`. If you did not create this namespace in a previous step you can choose a different namespace or cancel the migration plan wizard, create the namespace, then restart this step.
+* Target namespace: `%username%`. If you did not create this namespace in a previous step you can choose a different namespace or cancel the migration plan wizard, create the namespace, then restart this step.
 +
 image::images/import_migration_plan_2.png[]
 
@@ -229,7 +217,7 @@ image::images/import_start_plan_3.png[]
 
 . Wait and watch the transfer progress
 +
-The import job is running as a Pod in the `rhsummit` namespace (or whatever namespace you used for the destination). From the OpenShift UI, browse to *Workloads* -> *Pods*, select the Pod with a name starting with `importer-summit-oracle` and view the logs to see the exact status.
+The import job is running as a Pod in the `%username%` namespace (or whatever namespace you used for the destination). From the OpenShift UI, browse to *Workloads* -> *Pods*, select the Pod with a name starting with `importer-summit-oracle` and view the logs to see the exact status.
 +
 image::images/import_start_plan_3.png[]
 
