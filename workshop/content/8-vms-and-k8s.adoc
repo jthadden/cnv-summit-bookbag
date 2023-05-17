@@ -25,17 +25,18 @@ Goals:
 
 
 [IMPORTANT]
-This segment of the lab assumes you have completed the activity _Customizing a VM at creation_ from the "Managing VMs" segment. If you have not completed that activity, you can still use the virtual machine in the `retail-user1` project to create a `Service`, however the remaining steps for verifying the application shown here will not work for that VM.
+This segment of the lab assumes you have completed the activity _Customizing a VM at creation_ from the "Managing VMs" segment. If you have not completed that activity, you can still use the virtual machine in the `retail-%username%` project to create a `Service`, however the remaining steps for verifying the application shown here will not work for that VM.
 
 == Exposing VM-hosted applications using the SDN
 
-Using a `Service` makes container and virtual machine based applications discoverable on the SDN. This makes it easy for other application components to reach them using shortened DNS names instead of tracking a potentially changing SDN IP address. 
+Using a `Service` makes container and virtual machine based applications discoverable on the SDN. This makes it easy for other application components to reach them using shortened DNS names instead of tracking a potentially changing SDN IP address.
+A service also allows for more sophisticated usage, like balancing between multiple VMs for e.g. fault tolerance. Also, if VMs are enriched with health checks, a service will only route traffic to VMs that are ready to service the request.
 
 . Verify that the application is running as expected by opening the VM console, logging in, and using the command `curl localhost:3000`
 +
-We are using the virtual machine configured in the lab segment "Customizing a virtual machine at creation". This VM used cloud-init to install NodeJS and a simple page that responds with the VM's hostname. If you have not completed this process, please return to that section of the guide or, for a less complete example, use the `oracle-database` VM in the `retail-user1` namespace.
+We are using the virtual machine configured in the lab segment "Customizing a virtual machine at creation". This VM used cloud-init to install NodeJS and a simple page that responds with the VM's hostname. If you have not completed this process, please return to that section of the guide or, for a less complete example, use the `oracle-database` VM in the `retail-%username%` namespace.
 +
-Browse to *Virtualization* -> *VirtualMachines*, ensure you're using the `rhsummit` project, then choose the VM created previously.
+Browse to *Virtualization* -> *VirtualMachines*, ensure you're using the `%username%` or `retail-%username%` project, then choose the VM created previously.
 +
 image::images/connect_verify_1.png[]
 +
@@ -43,11 +44,15 @@ The credentials are visible in the OpenShift UI by expanding the "Guest login cr
 +
 image::images/connect_verify_2.png[]
 
-. After verifying the web app is responding, in the left navigation menu browse to *Networking* -> *Services*, ensure you're viewing the `rhsummit` project. Click the *Create Service* button.
+. After verifying the web app is responding, in the left navigation menu browse to *Networking* -> *Services*, ensure you're viewing the `%username%` or `retail-%username%` project. Click the *Create Service* button.
 +
 image::images/connect_service_1.png[]
 
 . The `Service` definition is YAML based. Copy/paste the below YAML to create the `Service`. Once done, click the *Create* button.
++
+[NOTE]
+Replace the value of `namespace` with either `%username%` or `retail-%username%`. If you are interested in what is possible to define here, you can click on the *View sidebar* link in the upper right of the editor frame.
+You'll get the online help on the right of the editor where you can dig e.g. through the *spec* details to see what other parameters are available.
 +
 [source]
 ----
@@ -108,7 +113,7 @@ image::images/connect_route_4.png[]
 
 A `Service` allows the Pods and VMs identified by the selector to be quickly and easily consumed by any other Pod or VM in the cluster, while the `Route` enables access from external to the cluster. Let's use a VM from a different project to connect to the VM deployed for Red Hat Summit.
 
-. In the left navigation pane, browse to *Virtualization* -> *VirtualMachines*, then change to the `retail-user1` project. A virtual machine named `oracle-database` has already been created.
+. In the left navigation pane, browse to *Virtualization* -> *VirtualMachines*, then change to the `retail-%username%` project. A virtual machine named `oracle-database` has already been created.
 +
 image::images/connect_access_1.png[]
 +
@@ -131,7 +136,7 @@ image::images/connect_access_3.png[]
 . Verify connectivity to the VM created for Red Hat Summit using a `curl` command against the fully qualified `Service` name.
 +
 ====
-curl summit-lab.rhsummit.svc.cluster.local
+curl summit-lab.%username%.svc.cluster.local
 ====
 +
 image::images/connect_access_4.png[]
@@ -141,11 +146,7 @@ image::images/connect_access_4.png[]
 If you receive an error about the hostname not being resolved, this is because the guest OS was not reconfigured for the SDN after being imported. You can temporarily fix this with the following command:
 [source]
 ----
-cat << EOF | sudo tee /etc/resolv.conf
-search svc.cluster.local cluster.local aio.example.com
-nameserver 172.30.0.10
-options ndots:5
-EOF
+echo "nameserver 172.30.0.10" | sudo tee /etc/resolv.conf
 ----
 ====
 
@@ -153,16 +154,20 @@ EOF
 
 The previous section showed how we can use the `Service` name to quickly find and connect to applications hosted in VMs or Pods across the SDN. In this section of the lab we will use a `NetworkPolicy` to block traffic between the VMs. This provides a powerful platform-based tool for managing connectivity between OpenShift-hosted applications, giving the administrator, along with the security and application teams, fine grained control over connection policies that don't rely on guest OS firewall configuration and can be managed using the same tools and methodologies as the rest of the Kubernetes-based application.
 
-. Create a network policy to block traffic from the `retail-user1` project accessing the `rhsummit` project. Browse to *Networking* -> *NetworkPolicies*, switch to the *rhsummit* project, then click *Create NetworkPolicy*
+. Create a network policy to block traffic from the `retail-%username%` project accessing the `%username%` project. Browse to *Networking* -> *NetworkPolicies*, switch to the *%username%* project, then click *Create NetworkPolicy*
 +
 * Policy name: `retail-ingress`
 * Click the *Add ingress rule* button
 * Click the *Add allowed source* button, select the *Allow pods from the same namespace* option.
 * Click the *Create* button
 +
+[NOTE]
+I you do not define any *Ingress* *NetworkPolicies* in your project, the default is to allow all traffic for ingress. So every other project can reach your services, given that they know the name.
+Once you define one or more *Ingress* *NetworkPolicies*, the default switches to deny-all and you are just defining the exceptions to this rule. The same applies to *Egress*.
++
 image::images/connect_policy_1.png[]
 
-. Return to the `oracle-database` VM in the `retail-user1` project. Open the console and login again if needed. Repeat the `curl` command from the previous activity to test connectivity. This time the connection is not permitted and will result in the `curl` command timing out.
+. Return to the `oracle-database` VM in the `retail-%username%` project. Open the console and login again if needed. Repeat the `curl` command from the previous activity to test connectivity. This time the connection is not permitted and will result in the `curl` command timing out.
 +
 image::images/connect_policy_2.png[]
 +
