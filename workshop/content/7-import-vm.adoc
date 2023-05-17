@@ -236,8 +236,11 @@ image::images/import_start_plan_3.png[]
 [NOTE]
 Some changes have been made to the infrastructure supporting the RHV import. The import job _may_ fail. As noted above, this _will not_ affect your ability to complete the lab as the virtual machine is already available in the `retail-user` namespace.
 
-== Application modernization
+== [OPTIONAL] Application modernization
 
-This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please refer to the lab guide https://app-mod-ilt-m3-app-mod-guides.%cluster_url%/app-mod-ilt-m3/main/[here].
+This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please use https://get-a-username-dev-guides.apps.%cluster_subdomain%[this page] to access the lab guide. 
+
+[IMPORTANT]
+Use the same username that you've already been assigned, even though the form will give you a different username. The module links for the guide and other information is still correct and accurate.
 
 Alternatively, please attend one of the Modern Application Development workshops offered at Red Hat Summit.

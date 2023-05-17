@@ -54,18 +54,18 @@ If your cluster uses worker nodes with different CPUs, live migration failures c
 
 === Review Nodes and Machines
 
-. Navigate to %ocp_url% and login with user `admin` and password `%ocp_admin_password`.
+. Navigate to https://console-openshift-console.%cluster_subdomain% and login with user `%username%` and password `openshift`.
 
 . From the navigation menu, select *Compute* -> *Nodes*:
 +
 image::images/environment_compute_nodes.png[]
 +
-There are three control plane and four workers, including one "metal" node, in the cluster. At least one physical node is required for OpenShift Virtualization, "nesting" and emulation are not supported. However, other nodes in the cluster can be virtual machines, for example control plane and infrastructure nodes.
+There are three control plane and multiple workers, including several "metal" nodes, in the cluster. At least one physical node is required for OpenShift Virtualization, "nesting" and emulation are not supported. However, other nodes in the cluster can be virtual machines, for example control plane and infrastructure nodes.
 +
 [NOTE]
 **Reminder:** OpenShift Virtualization using AWS bare metal nodes is currently tech preview.
 
-. Click the `metal` worker node to see detailed resource information about the node. Navigate to the *Details* tab to review the information about the node, including the operating system and CPU architecture.
+. Click a `metal` worker node to see detailed resource information about the node. Navigate to the *Details* tab to review the information about the node, including the operating system and CPU architecture.
 +
 image::images/environment_metal_node.png[]
 +
@@ -77,7 +77,7 @@ image::images/environment_metal_node_details.png[]
 +
 image::images/environment_metal_node_yaml.png[]
 +
-The labels for `*.node.kubevir.io` indicate which features are supported by this node, including CPU features/capabilities and other low-level hardware functionality. These labels, along with the node's annotations, can be used for scheduling hints with virtual machines. For example, if your cluster consists of nodes with mixed AMD and Intel CPU architectures node selectors can be used to indicate that you want the VM to use one or the other.
+The labels for `*.node.kubevirt.io` indicate which features are supported by this node, including CPU features/capabilities and other low-level hardware functionality. These labels, along with the node's annotations, can be used for scheduling hints with virtual machines. For example, if your cluster consists of nodes with mixed AMD and Intel CPU architectures node selectors can be used to indicate that you want the VM to use one or the other.
 +
 image::images/environment_metal_node_allocatable.png[]
 +
@@ -142,3 +142,7 @@ Each of the PVCs will come from the `ocs-storagecluster-ceph-rbd` storage class,
 The capacity should be large enough to hold the base operating system and any packages/software installed that will be used by any VMs created from this template disk. VMs created from the disk can increase the size of the disk, but cannot shrink it.
 +
 image::images/environment_pvc_details.png[]
++
+These PVCs contain the template disks for virtual machines. They were created automatically by the Operator when it was deployed, importing the disks from Red Hat sources. As the virtualization administrator, you can disable this behavior and have the ability to create and add your own template disks, including those for Microsoft Windows operating systems.
+
+Now that we have an understanding of some of hte basics of the OpenShift environment and OpenShift Virtualization configuration, let's move on to creating a virtual machine.

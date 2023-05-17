@@ -53,7 +53,7 @@ Virtual machines, like all Kubernetes and OpenShift resources, are namespaced. T
 +
 image::images/create_project_menu.png[]
 +
-Use your username e.g. `user9` as the name of the project, then click *Create*.
+Use your username, %username%, as the name of the project, then click *Create*.
 +
 image::images/create_project_modal.png[]
 +

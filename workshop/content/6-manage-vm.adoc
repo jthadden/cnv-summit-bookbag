@@ -5,7 +5,7 @@
 
 :numbered:
 
-In this segment of the lab we will accomplish some common virtual machine management tasks via the GUI. The OpenShift administrator console plugin for OpenShift Virtualization makes the process of changing, adding, and removing VM configuration straightforward and familiar, however you can also choose to use the CLI to edit the YAML definition directly.
+In this segment of the lab we will accomplish some common virtual machine management tasks via the GUI. The OpenShift administrator console plugin for OpenShift Virtualization makes the process of changing, adding, and removing VM configuration straightforward and familiar, however you can also choose to use the CLI to edit the YAML definition directly. 
 
 Each virtual machine is an object, like all things deployed using Kubernetes, so we can interact with it using the same tools and processes as any other Kubernetes object. However, we will not be focusing on that during this lab. If you want to lean more about https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-create-vms.html#virt-creating-vm-cli_virt-create-vms[creating] and https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/virt-edit-vms.html#virt-editing-vm-cli_virt-edit-vms[editing] virtual machines using YAML, please refer to https://docs.openshift.com/container-platform/4.12/virt/virt-using-the-cli-tools.html[the documentation].
 
@@ -20,7 +20,7 @@ This section of the lab will focus on modifying and customizing a virtual machin
 
 . In the navigation menu, browse to *Virtualization* -> *VirtualMachines*
 +
-Make sure you're using the `rhsummit` project.
+Make sure you're using the `%username%` project.
 +
 image::images/modify_navigate.png[]
 
@@ -70,7 +70,7 @@ The other fields control how the disk is created. These include:
 * Whether the disk is preallocated, i.e. "thick" provisioned. By default OpenShift Virtualization creates the VM disks as thin provisioned in the PVC.
 +
 [NOTE]
-Selecting preallocation or not might not affect how the CSI provisioner will create the volume on the backing storage device. Some storage partners will create thin/thick devices based on their own policies, often defined at the storage class level. Be sure to work with your storage team and vendor to determine the optimal setting for your environment.
+Preallocating, or not, the VM disk does not affect how the CSI provisioner will create the volume on the backing storage device. Some storage partners will create thin/thick devices based on their own policies, often defined at the storage class level. Be sure to work with your storage team and vendor to determine the optimal setting for your environment.
 
 . Add a toleration for the lab environment taint
 +
@@ -98,7 +98,7 @@ image::images/modify_cloud_init_1.png[]
 +
 In the modal we want to use the *Script* option to provide a custom cloud-init script for the virtual machine. After selecting the *Script* radio button, the modal will change to show some YAML code. Select all of this code and delete it, then copy -> paste the below YAML into the dialog.
 +
-[source]
+[source,none,role="copypaste copypaste-warning"]
 ----
 userData: |
   #cloud-config
@@ -184,9 +184,13 @@ image::images/modify_labels_2.png[]
 
 . Click the *Create VirtualMachine* button
 +
-Ensure the *Start this VirtualMachine after creation*`* checkbox is checked.
+Ensure the *Start this VirtualMachine after creation* checkbox is checked.
 +
 image::images/modify_create_button.png[]
++
+If the *Start this VirtualMachine after creation* checkbox was not checked, start the virtual machine by selecting the *Actions* drop down, then choosing *Start*.
++
+image::images/modify_create_button_1.png[]
 
 . Login to the VM to verify the configuration
 +
@@ -261,8 +265,35 @@ image::images/modify_snap_vm_snap_volume.png[]
 +
 image::images/modify_snap_vm.png[]
 
-. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu..
+. Browse to the *Snapshots* tab for the virtual machine, for the snapshot, choose *Delete VirtualMachineSnapshot* from the menu.
 +
 image::images/modify_snap_delete_1.png[]
 
 . Click *Delete* in the modal, to confirm the deletion.
+
+== Live migration
+
+Pods are not migrated, they are terminated and rescheduled if they need to leave a node for any reason. For virtual machines, this behavior is not what's expected - we expect a VM to nondisruptively move between nodes! OpenShift Virutalization is no exception to this, the VMs can be live migrated at any time. OpenShift updates, graceful eviction (e.g. due to a soft threshold violation), node maintaince via a cordon + drain operation, or just manually triggering a migration via the GUI, CLI, or programmatically using API (with a standard YAML object) all result in the virtual machine being live migrated as expected.
+
+. Navigate to *Virtualization* -> *VirtualMachines* in the left navigation menu.
++
+Make sure you're using the `%username%` project.
++
+image::images/modify_live_migrate_1.png[]
+
+. For the virtual machine you want to migrate, click the 3-dot menu on the right of the row. Select the *Migrate* option.
++
+image::images/modify_live_migrate_2.png[]
+
+. Alternatively, view the details for the VM by clicking it's name, then selecting the *Actions* drop down in the upper right, and choosing the *Migrate* option.
++
+image::images/modify_live_migrate_3.png[]
+
+. A few secnods after clicking *Migrate*, the VM status will change to *Migrating*.
++
+image::images/modify_live_migrate_4.png[]
+
+. After completing, the VM will return to the running status and the node will be different than before.
++
+image::images/modify_live_migrate_4.png[]
+
