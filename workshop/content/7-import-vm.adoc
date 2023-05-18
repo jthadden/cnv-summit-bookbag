@@ -229,7 +229,7 @@ Some changes have been made to the infrastructure supporting the RHV import. The
 
 == [OPTIONAL] Application modernization
 
-This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please use https://get-a-username-dev-guides.apps.%cluster_subdomain%[this page] to access the lab guide. 
+This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please use https://get-a-username-dev-guides.%cluster_subdomain%[this page] to access the lab guide. 
 
 [IMPORTANT]
 Use the same username that you've already been assigned, even though the form will give you a different username. The module links for the guide and other information is still correct and accurate.
