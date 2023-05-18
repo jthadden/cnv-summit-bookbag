@@ -24,70 +24,62 @@ There are four migration toolkits:
 * https://developers.redhat.com/products/mtr/overview[Migration Toolkit for Runtimes] - Assist and accelerate Java application modernization and migration.
 * https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/[Migration Toolkit for Applications] - Accelerate large-scale application modernization efforts to containers and Kubernetes.
 * https://docs.openshift.com/container-platform/4.12/migration_toolkit_for_containers/about-mtc.html[Migration Toolkit for Containers] - Migrate stateful application workloads between OpenShift clusters.
-* https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization] - Import virtual machines from Red Hat Virtualization (RHV) and VMware vSphere into OpenShift Virtualization. The ability to migrate from Red Hat OpenStack Platform (RHOSP) and OpenShift Virtualization (OCP-V) will follow in the next versions of MTV.
+* https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization] - Import virtual machines from Red Hat Virtualization (RHV) and VMware vSphere into OpenShift Virtualization. The ability to migrate from Red Hat OpenStack Platform (RHOSP) and OpenShift Virtualization is available in version 2.4 and later.
 
 This lab uses the Migration Toolkit for Virtualization (MTV) to import a virtual machine from Red Hat Virtualization to OpenShift. The migration toolkit supports two "modes" of import:
 
 * Cold migration turns off the source virtual machine before starting the migration. This is the default migration type.
 * Warm migration copies data while the source virtual machine continues to run. Once the bulk of data has been migrated, the VM is shutdown and the final data is copied to the destination. The new VM can then be started, resulting in a much shorter period of downtime for the VM-hosted application.
 
-
 The migration toolkit has already been deployed to your cluster using the Operator. Documentation for how to install and configure the Operator can be found https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/[here].
 
-If you would like to learn more about how to configure the Migration Toolkit for Virtualization, please see https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.3/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#rhv-prerequisites_mtv[here] for documentation with Red Hat Virtualization or https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.3/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#vmware-prerequisites_mtv[here] for VMware vSphere.
+If you would like to learn more about how to configure the Migration Toolkit for Virtualization, please see https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.4/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#rhv-prerequisites_mtv[here] for documentation with Red Hat Virtualization or https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.4/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#vmware-prerequisites_mtv[here] for VMware vSphere.
 
 === Accessing the Migration Toolkit for Virtualization
 
 . The migration toolkit dashboard can be found in the menu on the left side
 
-. Click on *Providers for virtualization*
+. Browse to *Migration*, then click on *Providers for virtualization*
++
+image::images/import_navigate.png[]
+
+=== Add the provider for the local cluster
+
+Each source and destination is configured as a provider. The imported virtual machine(s) will be hosted by the local cluster, so we first need to add the cluster as a provider.
+
+. After browsing to the *Providers for virtualization* menu option described above, ensure you are in the `%username%`, e.g. `user10` project, and click the *Create Provider* button. If you have not already created the project, do so now.
++
+image::images/import_add_local_provider_1.png[]
+
+. In the modal, select `OpenShift Virtualization` as the provider type, then complete the remaining fields as described below. Click *Create*.
++
+* Provder name: `local`
++
+[NOTE]
+The API URL and service account token fields must be empty.
++
+image::images/import_add_local_provider_2.png[]
+
 
 === Add the RHV provider
 
-The first step to importing virtual machines is to add a source provider. The cluster hosting the Migration Toolkit for Virtualization is already added as a provider, which will be used as the destination.
+The next step to importing virtual machines is to add a source provider. The cluster hosting the Migration Toolkit for Virtualization is already added as a provider, which will be used as the destination.
 
-. From the *Providers* panel, click the *Add provider* button
+. From the *Providers* panel, click the *Create provider* button
 +
 image::images/import_add_provider_1.png[]
 
-. Select *Red Hat Virtualization* from the provider type drop down
+. Select *Red Hat Virtualization* from the provider type drop down, complete the info. When data entry is done, click the *Create* button.
 +
-image::images/import_add_provider_2.png[]
-
-. Complete the provider details
-+
-* Name: `rhv-summit`
+* Name: `summit-rhv`
 * RHV Manager hostname or IP address: `rhvm.cnv.infra.opentlc.com`
 * RHV Manager user name: `%rhv_username%`
 * RHV Manager password: `%rhv_password%`
-* CA certificate:
+* Check the box for *Skip certificate validation*
 +
-  -----BEGIN CERTIFICATE-----
-  MIID9DCCAtygAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwWDELMAkGA1UEBhMCVVMxHjAcBgNVBAoM
-  FWNudi5pbmZyYS5vcGVudGxjLmNvbTEpMCcGA1UEAwwgcmh2bS5jbnYuaW5mcmEub3BlbnRsYy5j
-  b20uMjk5NTYwHhcNMjMwMzAxMjA0OTUwWhcNNDMwMjI1MjA0OTUwWjBYMQswCQYDVQQGEwJVUzEe
-  MBwGA1UECgwVY252LmluZnJhLm9wZW50bGMuY29tMSkwJwYDVQQDDCByaHZtLmNudi5pbmZyYS5v
-  cGVudGxjLmNvbS4yOTk1NjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKnqGGFwAWYt
-  LY1BjayiZnMenzKt369B0yhK5zuoX8fFdJC+X3nwGN8MmpshpFdMK8WGiyM9BjL1t4/UhlTsnEB5
-  YcPyyvAfjT4a5adGPdN0iEI8VBtn2eGuOpSdyPJmv33Ef+IaS7oCcYKZPiOztSn+Rzy8SncrAGa5
-  +nhXN/6rTvTc2vTv+UMTK6ozIYZg5aEcengOtS8u2fTIDNeMBZIqcH0CHu5phuGtkPdUtx9+/m2t
-  bnBWCwa9iIeGukNNNpdsS/KCzJLh/qRu3tcNaURcp6E2RSNh37+Z1A+/gxW+/YrvHy9eDY/V8M/u
-  ZNAlLuakwqXTRkEsKrND0q61+fECAwEAAaOBxzCBxDAdBgNVHQ4EFgQU6cXhwojVLqRZnpb6jND7
-  J4PBe2MwgYEGA1UdIwR6MHiAFOnF4cKI1S6kWZ6W+ozQ+yeDwXtjoVykWjBYMQswCQYDVQQGEwJV
-  UzEeMBwGA1UECgwVY252LmluZnJhLm9wZW50bGMuY29tMSkwJwYDVQQDDCByaHZtLmNudi5pbmZy
-  YS5vcGVudGxjLmNvbS4yOTk1NoICEAAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYw
-  DQYJKoZIhvcNAQELBQADggEBADP+YTXYVGOx2mOQkmmFBkRM0i9mxD3pLxWXCCrhcOUi6c45Z8pi
-  NUmFjJTc6+/TjcqLMdeuUvybw48D1NGlwQhLSUgKXyt373lclb5gcankCSmq+lf5Sx0O9vx3VNkM
-  q0YekoEE8BGrFDmGlQnCCDA1LFL86XcBr4dgEsOcmhI++ytz6lCdPSEJ+FKukKT9KEucwxb3SKyg
-  k9XCB/QWKbJxRkr6NvyDqPir1m9/CMy210Ct6RWPKIZVDJXxmrjT+TnZU0idv2XK8P4Tn60kJPHr
-  317nu4QbnejU9CukFdug4ti6y2zKahjxaZuSqibRVq2Njup0oQmOg0glyoefnFg=
-  -----END CERTIFICATE-----
-+
-When data entry is done, click the *Add* button.
-+
-image::images/import_add_provider_3.png[]
+image::images/import_add_provider_2.png[]
 
-. Wait for the provider status to go from `Validating` to `Ready`
+. Wait for the provider status to go from `Staging` to `Ready`
 +
 image::images/import_add_provider_4.png[]
 
@@ -104,16 +96,19 @@ image::images/import_add_network_1.png[]
 
 . In the modal, input the values below, click *Create*
 +
-* Type: `Network`
 * Name: `public-to-sdn`
-* Source provider: `rhv-summit`. This will match the name given to the provider created in the previous step.
-* Target provider: `host`
+* Source provider: `summit-rhv`. This will match the name given to the provider created in the previous step.
+* Target provider: `local`
 * Source networks: `Public`
 * Target namespaces / networks: `Pod network (default)`
 +
 The *Source networks* and *Target namespaces / networks* fields will not appear until the other fields have been filled.
 +
 image::images/import_add_network_2.png[]
+
+. The network map will be visible in the list after.
++
+image::images/import_add_network_3.png[]
 
 === Create a storage mapping
 
@@ -128,9 +123,8 @@ image::images/import_add_storage_1.png[]
 
 . In the modal, input the values below, click *Create*
 +
-* Type: `Storage`
 * Name: `vmstore-to-rbd`
-* Source provider: `rhv-summit`. This will match the name given to the provider created in the previous step.
+* Source provider: `summit-rhv`. This will match the name given to the provider created in the previous step.
 * Target provider: `host`
 * Source storage domains: `vmstore00`
 * Target storage classes: `ocs-storagecluster-ceph-rbd`
@@ -138,6 +132,10 @@ image::images/import_add_storage_1.png[]
 As with the network mapping, the last two options will not appear until the other fields are completed.
 +
 image::images/import_add_storage_2.png[]
+
+. The storage map will be visible in the list after.
++
+image::images/import_add_storage_3.png[]
 
 [NOTE]
 The above created network and storage mappings allow us now to implement a plan for the migration. The mappings can be re-used for many plans that define the actual migration plan. 
@@ -155,9 +153,9 @@ image::images/import_migration_plan_1.png[]
 . In the *General* pane, complete the fields. Click *Next* when done.
 +
 * Plan name: `summit-oracle`
-* Source provider: `rhv-summit`
-* Target provider: `host`
-* Target namespace: `%username%`. If you did not create this namespace in a previous step you can choose a different namespace or cancel the migration plan wizard, create the namespace, then restart this step.
+* Source provider: `summit-rhv`
+* Target provider: `local`
+* Target namespace: your user namespace, `%username%`. If you did not create this namespace in a previous step you can choose a different namespace or cancel the migration plan wizard, create the namespace, then restart this step.
 +
 image::images/import_migration_plan_2.png[]
 
@@ -203,7 +201,7 @@ image::images/import_migration_plan_9.png[]
 
 This step is *optional*. Importing the virtual machine can take 20-40 minutes, or longer, depending on several factors. As a result the lab already has the virtual machine imported to the `retail-user` namespace with the name `oracle-database`.
 
-. After completing the previous step, the migration plan will be visible from the list found under the *Migration Plans* menu item. A terse overview of the migration can be seen by expanding the carrot to the left of the name. When you're ready, click the *Start* button for the migration plan.
+. After completing the previous step, the migration plan will be visible from the list found under the *Plans for virtualization* menu item. When you're ready, click the *Start* button for the migration plan.
 +
 image::images/import_start_plan_1.png[]
 
@@ -218,15 +216,13 @@ image::images/import_start_plan_3.png[]
 . Wait and watch the transfer progress
 +
 The import job is running as a Pod in the `%username%` namespace (or whatever namespace you used for the destination). From the OpenShift UI, browse to *Workloads* -> *Pods*, select the Pod with a name starting with `importer-summit-oracle` and view the logs to see the exact status.
-+
-image::images/import_start_plan_3.png[]
 
 [NOTE]
 Some changes have been made to the infrastructure supporting the RHV import. The import job _may_ fail. As noted above, this _will not_ affect your ability to complete the lab as the virtual machine is already available in the `retail-user` namespace.
 
 == [OPTIONAL] Application modernization
 
-This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please use https://get-a-username-dev-guides.apps.%cluster_subdomain%[this page] to access the lab guide. 
+This lab environment also has the projects, code, and other resources needed to complete the Modern Application Development workshop. This includes VScode and a sample Java application which uses an Oracle database. If you want to learn more about how to configure a container-based application to use the Oracle database running in the VM, please use https://get-a-username-dev-guides.%cluster_subdomain%[this page] to access the lab guide. 
 
 [IMPORTANT]
 Use the same username that you've already been assigned, even though the form will give you a different username. The module links for the guide and other information is still correct and accurate.
